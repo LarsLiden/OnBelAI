@@ -1,120 +1,130 @@
 {  
    "frames": [
        {
-        "leftHand:" :  {
+        "leftHand" :  {
             "x": 5.1,
             "y": 3.1,
             "onhold": false,
             "occluded": false
         },
-        "leftElbow:" :  {
+        "leftElbow" :  {
             "x": 5.1,
             "y": 3.1,
             "occluded": false
         },
-        "leftShoulder:" :  {
+        "leftShoulder" :  {
             "x": 5.1,
             "y": 3.1,
             "occluded": false
         },
-        "rightHand:" :  {
+        "rightHand" :  {
             "x": 5.1,
             "y": 3.1,
             "onhold": false,
             "occluded": false
         },
-        "rightElbow:" :  {
+        "rightElbow" :  {
             "x": 5.1,
             "y": 3.1,
             "occluded": false
         },
-        "rightShoulder:" :  {
+        "rightShoulder" :  {
             "x": 5.1,
             "y": 3.1,
             "occluded": false
         },
-        "leftFoot:" :  {
+        "leftFoot" :  {
             "x": 5.1,
             "y": 3.1,
             "onhold": false
         },
-        "leftKnee:" :  {
+        "leftKnee" :  {
             "x": 5.1,
             "y": 3.1,
             "occluded": false
         },
-        "rightFoot:" :  {
+        "rightFoot" :  {
             "x": 5.1,
             "y": 3.1,
             "onhold": false
         },
-        "rightKnee:" :  {
+        "rightKnee" :  {
             "x": 5.1,
             "y": 3.1,
             "occluded": false
         },
-        "hip:" :  {
+        "leftHip" :  {
             "x": 5.1,
             "y": 3.1,
+            "occluded": false
+        },
+        "rightHip" :  {
+            "x": 4.1,
+            "y": 3.5,
             "occluded": false
         }
     },
     {
-        "leftHand:" :  {
+        "leftHand" :  {
             "x": 4.1,
             "y": 2.1,
             "onhold": false,
             "occluded": false
         },
-        "leftElbow:" :  {
+        "leftElbow" :  {
             "x": 4.1,
             "y": 2.1,
             "occluded": false
         },
-        "leftShoulder:" :  {
+        "leftShoulder" :  {
             "x": 4.1,
             "y": 2.1,
             "occluded": false
         },
-        "rightHand:" :  {
+        "rightHand" :  {
             "x": 4.1,
             "y": 2.1,
             "onhold": false,
             "occluded": false
         },
-        "rightElbow:" :  {
+        "rightElbow" :  {
             "x": 4.1,
             "y": 2.1,
             "occluded": false
         },
-        "rightShoulder:" :  {
+        "rightShoulder" :  {
             "x": 4.1,
             "y": 2.1,
             "occluded": false
         },
-        "leftFoot:" :  {
+        "leftFoot" :  {
             "x": 4.1,
             "y": 2.1,
             "onhold": false
         },
-        "leftKnee:" :  {
+        "leftKnee" :  {
             "x": 4.1,
             "y": 2.1,
             "occluded": false
         },
-        "rightFoot:" :  {
+        "rightFoot" :  {
             "x": 4.1,
             "y": 2.1,
             "onhold": false
         },
-        "rightKnee:" :  {
+        "rightKnee" :  {
             "x": 4.1,
             "y": 2.1,
             "occluded": false
         },
-        "hip:" :  {
+        "leftHip" :  {
             "x": 4.1,
             "y": 2.1,
+            "occluded": false
+        },
+        "rightHip" :  {
+            "x": 3.1,
+            "y": 2.5,
             "occluded": false
         }
     }
