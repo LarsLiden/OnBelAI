@@ -13,8 +13,11 @@ export interface BodyPosition {
     rightElbow: LimbPosition
     rightShoulder: LimbPosition
     leftFoot: LimbPosition
+    leftKnee: LimbPosition
     rightFoot: LimbPosition
-    hip: LimbPosition
+    rightKnee: LimbPosition
+    leftHip: LimbPosition
+    rightHip: LimbPosition
 }
 
 export interface Recording {
@@ -37,7 +40,8 @@ export interface Delta {
     leftLegBent: boolean
     rightFoot: LimbDelta
     rightLegBent: boolean
-    hip: LimbPosition
+    leftHip: LimbDelta
+    rightHip: LimbDelta
 }
 
 

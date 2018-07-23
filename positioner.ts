@@ -1,7 +1,10 @@
 import * as fs from 'async-file';
 import * as path from 'path'
+import { Recording, Delta, BodyPosition, LimbPosition, LimbDelta } from './models';
 
 export class Positioner {
+
+    private const BEND_THRESHOLD = 0.1
 
     public async LoadRecording(fileName: string) {
         let filepath = path.join(process.cwd(), `./data/${fileName}`)
@@ -11,6 +14,35 @@ export class Positioner {
         let recording = JSON.parse(recordingJson)
     }
 
+    public LimbDelta(expertLimb: LimbPosition, noviceLimb: LimbPosition) : LimbDelta {
+        //let x = expertLimb.x - noviceLimb.x
+        
+        return {
+            deltaX: expertLimb.x - noviceLimb.x,
+            deltaY: expertLimb.y - noviceLimb.y,
+            occluded: expertLimb.occluded || noviceLimb.occluded
+        } as LimbDelta
+    }
+
+    public IsLimbBent(limb1: LimbPosition, limb2: LimbPosition, limb3: LimbPosition) : boolean {
+        let angle = Math.abs((limb1.y - limb2.y) * (limb1.x - limb3.x) - (limb1.y - limb3.y) * (limb1.x - limb2.x)) 
+        return angle < this.BEND_THRESHOLD
+    }
+
+    public GetDelta(expert: BodyPosition, novice: BodyPosition): Delta {
+        return {
+            leftHand: this.LimbDelta(expert.leftHand, novice.leftHand),
+            rightHand: this.LimbDelta(expert.rightHand, novice.rightHand),
+            leftFoot: this.LimbDelta(expert.leftFoot, novice.leftFoot),
+            rightFoot: this.LimbDelta(expert.rightFoot, novice.rightFoot),
+            leftHip: this.LimbDelta(expert.leftHip, novice.leftHip),
+            rightHip: this.LimbDelta(expert.rightHip, novice.rightHip),
+            leftArmBent: this.IsLimbBent(novice.leftHand, novice.leftElbow, novice.leftShoulder),
+            rightArmBent: this.IsLimbBent(novice.rightHand, novice.rightElbow, novice.rightShoulder),
+            leftLegBent: this.IsLimbBent(novice.leftFoot, novice.leftKnee, novice.leftHip),
+            rightLegBent: this.IsLimbBent(novice.rightFoot, novice.rightShoulder, novice.rightHip)
+        } as Delta
+    }
     public async Run() {
         let recording = await this.LoadRecording("Route1Expert.json")
     }
