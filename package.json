@@ -1,0 +1,19 @@
+{
+  "name": "onbelai",
+  "version": "1.0.0",
+  "description": "Rock Climbing Tutor",
+  "main": "app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LarsLiden/OnBelAI.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LarsLiden/OnBelAI/issues"
+  },
+  "homepage": "https://github.com/LarsLiden/OnBelAI#readme"
+}
