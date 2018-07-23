@@ -37,7 +37,7 @@ export interface Delta {
     leftLegBent: boolean
     rightFoot: LimbDelta
     rightLegBent: boolean
-    hip: LimbPosition
+    hip: LimbDelta
 }
 
 
