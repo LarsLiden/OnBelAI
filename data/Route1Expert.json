@@ -58,6 +58,65 @@
             "y": 3.1,
             "occluded": false
         }
+    },
+    {
+        "leftHand:" :  {
+            "x": 4.1,
+            "y": 2.1,
+            "onhold": false,
+            "occluded": false
+        },
+        "leftElbow:" :  {
+            "x": 4.1,
+            "y": 2.1,
+            "occluded": false
+        },
+        "leftShoulder:" :  {
+            "x": 4.1,
+            "y": 2.1,
+            "occluded": false
+        },
+        "rightHand:" :  {
+            "x": 4.1,
+            "y": 2.1,
+            "onhold": false,
+            "occluded": false
+        },
+        "rightElbow:" :  {
+            "x": 4.1,
+            "y": 2.1,
+            "occluded": false
+        },
+        "rightShoulder:" :  {
+            "x": 4.1,
+            "y": 2.1,
+            "occluded": false
+        },
+        "leftFoot:" :  {
+            "x": 4.1,
+            "y": 2.1,
+            "onhold": false
+        },
+        "leftKnee:" :  {
+            "x": 4.1,
+            "y": 2.1,
+            "occluded": false
+        },
+        "rightFoot:" :  {
+            "x": 4.1,
+            "y": 2.1,
+            "onhold": false
+        },
+        "rightKnee:" :  {
+            "x": 4.1,
+            "y": 2.1,
+            "occluded": false
+        },
+        "hip:" :  {
+            "x": 4.1,
+            "y": 2.1,
+            "occluded": false
+        }
     }
     ]
 }
