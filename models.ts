@@ -27,6 +27,7 @@ export interface Recording {
 export interface LimbDelta {
     deltaX: number
     deltaY: number
+    distance: number
     onHold?: boolean
     occluded?: boolean
 }

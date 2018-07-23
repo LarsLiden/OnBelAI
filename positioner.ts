@@ -10,18 +10,22 @@ export class Positioner {
     /* If distance is less than this threshold considered to be at some position */
     private POSITION_THRESHOLD = 5;
 
-    public async LoadRecording(fileName: string) {
+    public async LoadRecording(fileName: string) : Promise<Recording> {
         let filepath = path.join(process.cwd(), `./data/${fileName}`)
 
        // let path = process.cwd() + "data\\" + fileName
         let recordingJson = await fs.readFile(filepath)
-        let recording = JSON.parse(recordingJson)
+        return JSON.parse(recordingJson)
     }
 
     public LimbDelta(expertLimb: LimbPosition, noviceLimb: LimbPosition) : LimbDelta {
+        let deltaX = expertLimb.x - noviceLimb.x
+        let deltaY = expertLimb.y - noviceLimb.y
+
         return {
-            deltaX: expertLimb.x - noviceLimb.x,
-            deltaY: expertLimb.y - noviceLimb.y,
+            deltaX,
+            deltaY,
+            distance: Math.sqrt((deltaX * deltaX) + (deltaY * deltaY)),
             occluded: expertLimb.occluded || noviceLimb.occluded
         } as LimbDelta
     }
@@ -32,15 +36,15 @@ export class Positioner {
     }
 
     public IsMatched(ld: LimbDelta) : boolean {
-        let length = Math.sqrt((ld.deltaX * ld.deltaX) + (ld.deltaY * ld.deltaY))
-        return length < this.POSITION_THRESHOLD
+        return ld.distance < this.POSITION_THRESHOLD
     }
 
+    /* Return list of Deltas for each frame in expert recording */
     public GetDeltas(expert: Recording, novice: BodyPosition): Delta[] {
         return expert.frames.map(e => this.GetDelta(e, novice))
     }
 
-    public GetBestExpertFrame(expert: Recording, novice: BodyPosition): any {
+    public GetBestExpertFrame(expert: Recording, novice: BodyPosition): Delta {
         // Calculate all the deltas
         let deltas = this.GetDeltas(expert, novice)
 
@@ -52,8 +56,22 @@ export class Positioner {
         deltas = deltas.filter(d => d.matchCount === mostMatches)
 
         // Of the remaining find one with smallest delta
-        
-        
+        let smallestDistance = Number.MAX_SAFE_INTEGER;
+        let bestDelta = deltas[0]
+        deltas.map(d => {
+            let totalDistance =
+                d.leftHand.distance +
+                d.rightHand.distance +
+                d.leftFoot.distance +
+                d.rightFoot.distance +
+                d.leftHip.distance +
+                d.rightHip.distance
+            if (totalDistance < smallestDistance) {
+                smallestDistance = totalDistance
+                bestDelta = d
+            } 
+        })
+        return bestDelta
     }
 
     public GetDelta(expert: BodyPosition, novice: BodyPosition): Delta {
@@ -86,6 +104,10 @@ export class Positioner {
         } as Delta
     }
     public async Run() {
-        let recording = await this.LoadRecording("Route1Expert.json")
+        let expertRecording = await this.LoadRecording("Route1Expert.json")
+        let noviceRecording = await this.LoadRecording("Route1Novice1.json")
+
+        let firstPos = noviceRecording.frames[0]
+        let bestDelta = this.GetBestExpertFrame(expertRecording, firstPos)
     }
 }
