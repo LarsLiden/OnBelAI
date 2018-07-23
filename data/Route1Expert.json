@@ -1,0 +1,63 @@
+{  
+   "frames": [
+       {
+        "leftHand:" :  {
+            "x": 5.1,
+            "y": 3.1,
+            "onhold": false,
+            "occluded": false
+        },
+        "leftElbow:" :  {
+            "x": 5.1,
+            "y": 3.1,
+            "occluded": false
+        },
+        "leftShoulder:" :  {
+            "x": 5.1,
+            "y": 3.1,
+            "occluded": false
+        },
+        "rightHand:" :  {
+            "x": 5.1,
+            "y": 3.1,
+            "onhold": false,
+            "occluded": false
+        },
+        "rightElbow:" :  {
+            "x": 5.1,
+            "y": 3.1,
+            "occluded": false
+        },
+        "rightShoulder:" :  {
+            "x": 5.1,
+            "y": 3.1,
+            "occluded": false
+        },
+        "leftFoot:" :  {
+            "x": 5.1,
+            "y": 3.1,
+            "onhold": false
+        },
+        "leftKnee:" :  {
+            "x": 5.1,
+            "y": 3.1,
+            "occluded": false
+        },
+        "rightFoot:" :  {
+            "x": 5.1,
+            "y": 3.1,
+            "onhold": false
+        },
+        "rightKnee:" :  {
+            "x": 5.1,
+            "y": 3.1,
+            "occluded": false
+        },
+        "hip:" :  {
+            "x": 5.1,
+            "y": 3.1,
+            "occluded": false
+        }
+    }
+    ]
+}
