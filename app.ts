@@ -1,9 +1,6 @@
 import * as fs from 'async-file';
+import { Positioner } from './positioner'
 
-export class Positioner {
+let positioner = new Positioner()
 
-    public async LoadRecording(fileName: string) {
-        let recordingJson = await fs.readFile(fileName)
-        let recording = JSON.parse(recordingJson)
-    }
-}
+positioner.Run()
