@@ -13,8 +13,11 @@ export interface BodyPosition {
     rightElbow: LimbPosition
     rightShoulder: LimbPosition
     leftFoot: LimbPosition
+    leftKnee: LimbPosition
     rightFoot: LimbPosition
-    hip: LimbPosition
+    rightKnee: LimbPosition
+    leftHip: LimbPosition
+    rightHip: LimbPosition
 }
 
 export interface Recording {
@@ -24,20 +27,27 @@ export interface Recording {
 export interface LimbDelta {
     deltaX: number
     deltaY: number
+    distance: number
     onHold?: boolean
     occluded?: boolean
 }
 
 export interface Delta {
     leftHand: LimbDelta
+    leftHandMatched: boolean
     leftArmBent: boolean
     rightHand: LimbDelta
+    rightHandMatched: boolean
     rightArmBent: boolean
     leftFoot: LimbDelta
+    leftFootMatched: boolean
     leftLegBent: boolean
     rightFoot: LimbDelta
+    rightFootMatched: boolean
     rightLegBent: boolean
-    hip: LimbDelta
+    leftHip: LimbDelta
+    rightHip: LimbDelta,
+    matchCount: number
 }
 
 
