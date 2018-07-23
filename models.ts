@@ -33,15 +33,20 @@ export interface LimbDelta {
 
 export interface Delta {
     leftHand: LimbDelta
+    leftHandMatched: boolean
     leftArmBent: boolean
     rightHand: LimbDelta
+    rightHandMatched: boolean
     rightArmBent: boolean
     leftFoot: LimbDelta
+    leftFootMatched: boolean
     leftLegBent: boolean
     rightFoot: LimbDelta
+    rightFootMatched: boolean
     rightLegBent: boolean
     leftHip: LimbDelta
-    rightHip: LimbDelta
+    rightHip: LimbDelta,
+    matchCount: number
 }
 
 
