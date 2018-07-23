@@ -43,6 +43,17 @@ export class Positioner {
     public GetBestExpertFrame(expert: Recording, novice: BodyPosition): any {
         // Calculate all the deltas
         let deltas = this.GetDeltas(expert, novice)
+
+        // Get largest match
+        let mostMatches = 0
+        deltas.map(d => { mostMatches = Math.max(mostMatches, d.matchCount) })
+
+        // Filter to ones with max matches
+        deltas = deltas.filter(d => d.matchCount === mostMatches)
+
+        // Of the remaining find one with smallest delta
+        
+        
     }
 
     public GetDelta(expert: BodyPosition, novice: BodyPosition): Delta {
@@ -50,6 +61,11 @@ export class Positioner {
         let rightHandDelta = this.LimbDelta(expert.rightHand, novice.rightHand) as LimbDelta
         let leftFootDelta = this.LimbDelta(expert.leftFoot, novice.leftFoot) as LimbDelta
         let rightFootDelta = this.LimbDelta(expert.rightFoot, novice.rightFoot) as LimbDelta
+        let leftHandMatched = this.IsMatched(leftHandDelta)
+        let rightHandMatched = this.IsMatched(leftHandDelta)
+        let leftFootMatched = this.IsMatched(leftHandDelta)
+        let rightFootMatched=  this.IsMatched(leftHandDelta)
+        let matchCount = (leftHandMatched ? 1:0) + (rightHandMatched ? 1:0) + (leftFootMatched ? 1:0) + (rightFootMatched ? 1:0)
 
         return {
             leftHand: leftHandDelta,
@@ -62,10 +78,11 @@ export class Positioner {
             rightArmBent: this.IsLimbBent(novice.rightHand, novice.rightElbow, novice.rightShoulder),
             leftLegBent: this.IsLimbBent(novice.leftFoot, novice.leftKnee, novice.leftHip),
             rightLegBent: this.IsLimbBent(novice.rightFoot, novice.rightShoulder, novice.rightHip),
-            leftHandMatched: this.IsMatched(leftHandDelta),
-            rightHandMatched: this.IsMatched(leftHandDelta),
-            leftFootMatched: this.IsMatched(leftHandDelta),
-            rightFootMatched: this.IsMatched(leftHandDelta)
+            leftHandMatched,
+            rightHandMatched,
+            leftFootMatched,
+            rightFootMatched,
+            matchCount
         } as Delta
     }
     public async Run() {
