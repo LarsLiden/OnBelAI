@@ -1,0 +1,4 @@
+lib
+scripts/*.js
+scripts/*.js.map
+node_modules/

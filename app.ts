@@ -1,5 +1,9 @@
-const world = '🗺️';
+import * as fs from 'async-file';
 
-export function hello(word: string = world): string {
-  return `Hello ${world}! `;
+export class Positioner {
+
+    public async LoadRecording(fileName: string) {
+        let recordingJson = await fs.readFile(fileName)
+        let recording = JSON.parse(recordingJson)
+    }
 }

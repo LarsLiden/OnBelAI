@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/LarsLiden/OnBelAI/issues"
   },
-  "homepage": "https://github.com/LarsLiden/OnBelAI#readme"
+  "homepage": "https://github.com/LarsLiden/OnBelAI#readme",
+  "dependencies": {
+    "async-file": "^2.0.2",
+    "fs": "0.0.1-security",
+    "util": "^0.11.0"
+  }
 }
