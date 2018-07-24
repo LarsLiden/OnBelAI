@@ -149,7 +149,9 @@ export class Positioner {
             frame.leftHand.onHold = this.LimbOnHold(frame.leftHand, routeMap)
             frame.rightHand.onHold = this.LimbOnHold(frame.rightHand, routeMap)
             frame.leftFoot.onHold = this.LimbOnHold(frame.leftFoot, routeMap)
-            frame.rightFoot.onHold = this.LimbOnHold(frame.rightFoot, routeMap)           
+            frame.rightFoot.onHold = this.LimbOnHold(frame.rightFoot, routeMap)  
+            let status : String = "Frame {$frame.frameNumber} | onHolds: LH {$frame.leftHand.onHold}, RH: {$frame.rightHand.onHold}, LF {$frame.leftFoot.onHold}, RF: {$frame.rightFoot.onHold}"
+            console.log(status)     
             // We'll store the distance each limb moved for each frame count between 0 and maxHistory
             // so later on we can say leftHand.history.distanceMoved[1] or leftHand.history.distanceMoved[10]
             // for 1 or 10 frames
