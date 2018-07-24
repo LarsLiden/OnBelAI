@@ -190,9 +190,9 @@ export class Positioner {
         let expertRecording = await this.LoadRecording("Route1Expert.json")
         let noviceRecording = await this.LoadRecording("Route1Novice1.json")
         
-        let routeMap = await this.LoadRoute("Route1.json")
+        let routeMap = await this.LoadRoute("Route2.json")
 
-        // Add movement history to each of the recordings
+        // Add movement history and frames where limbs are on holds to each of the recordings
         this.AnnotateRecording(expertRecording, routeMap)
         this.AnnotateRecording(noviceRecording, routeMap)
 
