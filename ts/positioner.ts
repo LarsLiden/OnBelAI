@@ -1,8 +1,10 @@
-import * as fs from 'async-file';
-import * as path from 'path'
-let regl = require('regl')({extensions: 'angle_instanced_arrays'})
-let line2d = require('regl-line2d')(regl)
+/* eslint-disable */
+/* eslint-disable import/first */
+let expertRecording = require(`./data/Route1Expert.json`)
+let noviceRecording = require(`./data/Route1Novice1.json`)
+import { RenderSet } from './RenderSet'
 import { Recording, Delta, BodyPosition, LimbPosition, LimbDelta } from './models';
+
 
 export class Positioner {
 
@@ -11,14 +13,6 @@ export class Positioner {
 
     /* If distance is less than this threshold considered to be at some position */
     private POSITION_THRESHOLD = 3;
-
-    public async LoadRecording(fileName: string) : Promise<Recording> {
-        let filepath = path.join(process.cwd(), `./data/${fileName}`)
-
-       // let path = process.cwd() + "data\\" + fileName
-        let recordingJson = await fs.readFile(filepath)
-        return JSON.parse(recordingJson)
-    }
 
     public LimbDelta(expertLimb: LimbPosition, noviceLimb: LimbPosition) : LimbDelta {
         let deltaX = expertLimb.x - noviceLimb.x
@@ -104,8 +98,6 @@ export class Positioner {
         } as Delta
     }
     public async Run() {
-        let expertRecording = await this.LoadRecording("Route1Expert.json")
-        let noviceRecording = await this.LoadRecording("Route1Novice1.json")
 
         let firstPos = noviceRecording.frames[0]
 
@@ -114,6 +106,6 @@ export class Positioner {
         let bestDelta = this.GetBestExpertFrame(deltas, firstPos)
         let nextDelta = this.GetNextHoldChangeFrame(bestDelta, deltas, expertRecording)
 
-        line2d.render({ thickness: 4, points: [0,0, 1,1, 1,0], close: true, color: 'red' })
+        RenderSet.AddBodyPosition(expertRecording.frames[0])
     }
 }

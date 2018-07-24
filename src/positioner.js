@@ -33,10 +33,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import * as fs from 'async-file';
-import * as path from 'path';
-var regl = require('regl')({ extensions: 'angle_instanced_arrays' });
-var line2d = require('regl-line2d')(regl);
+/* eslint-disable */
+/* eslint-disable import/first */
+var expertRecording = require("./data/Route1Expert.json");
+var noviceRecording = require("./data/Route1Novice1.json");
+import { RenderSet } from './RenderSet';
 var Positioner = /** @class */ (function () {
     function Positioner() {
         /* If less than this threshold, considered to be straight */
@@ -44,21 +45,6 @@ var Positioner = /** @class */ (function () {
         /* If distance is less than this threshold considered to be at some position */
         this.POSITION_THRESHOLD = 3;
     }
-    Positioner.prototype.LoadRecording = function (fileName) {
-        return __awaiter(this, void 0, void 0, function () {
-            var filepath, recordingJson;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        filepath = path.join(process.cwd(), "./data/" + fileName);
-                        return [4 /*yield*/, fs.readFile(filepath)];
-                    case 1:
-                        recordingJson = _a.sent();
-                        return [2 /*return*/, JSON.parse(recordingJson)];
-                }
-            });
-        });
-    };
     Positioner.prototype.LimbDelta = function (expertLimb, noviceLimb) {
         var deltaX = expertLimb.x - noviceLimb.x;
         var deltaY = expertLimb.y - noviceLimb.y;
@@ -132,22 +118,14 @@ var Positioner = /** @class */ (function () {
     };
     Positioner.prototype.Run = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var expertRecording, noviceRecording, firstPos, deltas, bestDelta, nextDelta;
+            var firstPos, deltas, bestDelta, nextDelta;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.LoadRecording("Route1Expert.json")];
-                    case 1:
-                        expertRecording = _a.sent();
-                        return [4 /*yield*/, this.LoadRecording("Route1Novice1.json")];
-                    case 2:
-                        noviceRecording = _a.sent();
-                        firstPos = noviceRecording.frames[0];
-                        deltas = this.GetDeltas(expertRecording, firstPos);
-                        bestDelta = this.GetBestExpertFrame(deltas, firstPos);
-                        nextDelta = this.GetNextHoldChangeFrame(bestDelta, deltas, expertRecording);
-                        line2d.render({ thickness: 4, points: [0, 0, 1, 1, 1, 0], close: true, color: 'red' });
-                        return [2 /*return*/];
-                }
+                firstPos = noviceRecording.frames[0];
+                deltas = this.GetDeltas(expertRecording, firstPos);
+                bestDelta = this.GetBestExpertFrame(deltas, firstPos);
+                nextDelta = this.GetNextHoldChangeFrame(bestDelta, deltas, expertRecording);
+                RenderSet.AddBodyPosition(expertRecording.frames[0]);
+                return [2 /*return*/];
             });
         });
     };
