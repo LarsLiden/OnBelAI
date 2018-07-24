@@ -6,10 +6,13 @@ with open(r"C:\Users\weijwang\source\VSCode\OneWeek\OnBelAI\data\joints.json") a
 total_frames = len(all_joints)
 reduced_frames = {}
 
+index = 0
 for i in range(0, 511):
     if i % 5 == 0:
         saved_frame = "frame" + str(i)
-        reduced_frames.update({saved_frame:all_joints[saved_frame]})
+        new_frame_index = "frame" + str(index)
+        reduced_frames.update({new_frame_index:all_joints[saved_frame]})
+        index += 1
     else:
         continue
 
