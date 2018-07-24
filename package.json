@@ -1,28 +1,26 @@
 {
   "name": "onbelai",
-  "version": "1.0.0",
-  "description": "Rock Climbing Tutor",
-  "main": "app.js",
-  "scripts": {
-    "test": "test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/LarsLiden/OnBelAI.git"
-  },
-  "author": "",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/LarsLiden/OnBelAI/issues"
-  },
-  "homepage": "https://github.com/LarsLiden/OnBelAI#readme",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
+    "@types/jest": "^23.3.0",
+    "@types/react": "^16.4.7",
+    "@types/react-dom": "^16.0.6",
     "async-file": "^2.0.2",
     "fs": "0.0.1-security",
     "path": "^0.12.7",
-    "util": "^0.11.0"
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "react-scripts": "1.1.4",
+    "regl": "^1.3.7",
+    "regl-line2d": "^3.0.9",
+    "util": "^0.11.0",
+    "typescript": "2.4.2"
   },
-  "devDependencies": {
-    "@types/node": "^10.5.2"
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
   }
 }

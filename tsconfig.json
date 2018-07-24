@@ -1,10 +1,24 @@
 {
   "compilerOptions": {
-    "target": "ES2015",                          /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017','ES2018' or 'ESNEXT'. */
-    "module": "commonjs",                     /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */
-    "outDir": "lib",
+    "target": "es5",   
+    "lib": [
+      "es6",
+      "dom"
+    ],                       /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017','ES2018' or 'ESNEXT'. */
+    "types": [
+      "node",
+      "jest"
+    ],
+    "module": "esnext",  
+    "allowJs": true,                   /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */
+    "outDir": "src",
+    "rootDir": "ts",
+    "baseUrl": ".",
+    "jsx": "react",
     "sourceMap": true,
     "strict": true,
-    "esModuleInterop": true                   /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "strictNullChecks": false,   
   }
 }
