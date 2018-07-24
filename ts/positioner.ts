@@ -2,7 +2,7 @@ import * as fs from 'async-file';
 import * as path from 'path'
 let regl = require('regl')({extensions: 'angle_instanced_arrays'})
 let line2d = require('regl-line2d')(regl)
-import { Recording, Delta, BodyPosition, LimbPosition, LimbDelta } from './models';
+import { Recording, Route, Delta, BodyPosition, LimbPosition, LimbDelta, HoldPosition } from './models';
 
 export class Positioner {
 
@@ -20,15 +20,27 @@ export class Positioner {
         return JSON.parse(recordingJson)
     }
 
-    public LimbDelta(expertLimb: LimbPosition, noviceLimb: LimbPosition) : LimbDelta {
-        let deltaX = expertLimb.x - noviceLimb.x
-        let deltaY = expertLimb.y - noviceLimb.y
+    public async LoadRoute(fileName: string) : Promise<Route> {
+        let filepath = path.join(process.cwd(), `./data/${fileName}`)
+
+       // let path = process.cwd() + "data\\" + fileName
+        let routeJson = await fs.readFile(filepath)
+        return JSON.parse(routeJson)
+    }
+
+    public LimbDistance(Limb1: LimbPosition, Limb2: LimbPosition) : number {
+        let deltaX = Limb1.x - Limb2.x
+        let deltaY = Limb1.y - Limb2.y
         let distance = Math.sqrt((deltaX * deltaX) + (deltaY * deltaY))
+        return distance;
+
+    }
+
+    public LimbDelta(expertLimb: LimbPosition, noviceLimb: LimbPosition) : LimbDelta {
+        let distance = this.LimbDistance(expertLimb, noviceLimb);
         let matched = this.IsMatched(distance)
 
         return {
-            deltaX,
-            deltaY,
             distance,
             matched,
             occluded: noviceLimb.occluded
@@ -103,9 +115,53 @@ export class Positioner {
             matchCount
         } as Delta
     }
+
+    public AnnotateRecording (inputRecording: Recording) {
+        const maxHistory:number = 30
+
+        var positionHistory: BodyPosition[]
+        for (var frame of inputRecording.frames) {
+            for (var i = 0; i<maxHistory; i++) {
+                var deltaFrame : BodyPosition
+                if (positionHistory.length > i) {
+                    deltaFrame = positionHistory[i]
+                } else if (positionHistory.length > 0) {
+                    // We don't have the full buffer yet, so use the oldest
+                    deltaFrame = positionHistory[positionHistory.length - 1]
+                } else {
+                    // Yes, for frame 0 we will compute the delta from itself, which will be 0
+                    deltaFrame = frame
+                }
+                frame.leftHand.history.distanceMoved.unshift(this.LimbDistance(frame.leftHand,deltaFrame.leftHand))
+                frame.leftElbow.history.distanceMoved.unshift(this.LimbDistance(frame.leftElbow,deltaFrame.leftElbow))
+                frame.leftShoulder.history.distanceMoved.unshift(this.LimbDistance(frame.leftShoulder,deltaFrame.leftShoulder))
+                frame.rightHand.history.distanceMoved.unshift(this.LimbDistance(frame.rightHand,deltaFrame.rightHand))
+                frame.rightElbow.history.distanceMoved.unshift(this.LimbDistance(frame.rightElbow,deltaFrame.rightElbow))
+                frame.rightShoulder.history.distanceMoved.unshift(this.LimbDistance(frame.rightShoulder,deltaFrame.rightShoulder))
+                frame.leftFoot.history.distanceMoved.unshift(this.LimbDistance(frame.leftFoot,deltaFrame.leftFoot))
+                frame.leftKnee.history.distanceMoved.unshift(this.LimbDistance(frame.leftKnee,deltaFrame.leftKnee))
+                frame.rightFoot.history.distanceMoved.unshift(this.LimbDistance(frame.rightFoot,deltaFrame.rightFoot))
+                frame.rightKnee.history.distanceMoved.unshift(this.LimbDistance(frame.rightKnee,deltaFrame.rightKnee))
+                frame.leftHip.history.distanceMoved.unshift(this.LimbDistance(frame.leftHip,deltaFrame.leftHip))
+                frame.rightHip.history.distanceMoved.unshift(this.LimbDistance(frame.rightHip,deltaFrame.rightHip))
+            }
+            positionHistory.unshift(frame)
+            // If we've got more history than we can use, remove the oldest one
+            if (positionHistory.length > maxHistory) {
+                positionHistory.pop()
+            }
+       }
+    }
+
     public async Run() {
         let expertRecording = await this.LoadRecording("Route1Expert.json")
         let noviceRecording = await this.LoadRecording("Route1Novice1.json")
+        
+        //let routeMap = await this.LoadRoute("Route1.json")
+
+        // Add movement history to each of the recordings
+        this.AnnotateRecording(expertRecording)
+        this.AnnotateRecording(noviceRecording)
 
         let firstPos = noviceRecording.frames[0]
 

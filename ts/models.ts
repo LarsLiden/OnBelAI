@@ -3,6 +3,11 @@ export interface LimbPosition {
     y: number
     onHold?: boolean
     occluded?: boolean
+    history?: LimbHistory
+}
+
+export interface LimbHistory {
+    distanceMoved: number[]
 }
 
 export interface BodyPosition {
@@ -59,5 +64,15 @@ export interface Delta {
     noviceFrame: BodyPosition
 }
 
+export interface Route {
+   name: string
+   holds: HoldPosition[] 
+}
 
+export interface HoldPosition {
+    x: number
+    y: number
+    radius: number
+    id?: string
+}
 
