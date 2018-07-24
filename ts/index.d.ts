@@ -1,1 +1,0 @@
-declare module "regl-line2d"
