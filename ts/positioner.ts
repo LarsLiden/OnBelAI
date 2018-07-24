@@ -12,6 +12,12 @@ export class Positioner {
     /* If distance is less than this threshold considered to be at some position */
     private POSITION_THRESHOLD = 3;
 
+    /* If limb is within LIMB_HOLD_THRESHOLD of hold position * radius multiplier
+    for LIMB_HOLD_MIN_FRAMES, limb is considered to be on that hold */
+    private HOLD_RADIUS_MULTIPLIER = 2;
+    private LIMB_HOLD_THRESHOLD = 5;
+    private LIMB_HOLD_MAX_FRAME_MOVEMENT = 20;
+
     public async LoadRecording(fileName: string) : Promise<Recording> {
         let filepath = path.join(process.cwd(), `./data/${fileName}`)
 
@@ -116,12 +122,39 @@ export class Positioner {
         } as Delta
     }
 
-    public AnnotateRecording (inputRecording: Recording) {
+    public LimbOnHold(limb: LimbPosition, routeMap: Route): boolean {
+        for (var hold of routeMap.holds) {
+            let deltaX = limb.x - hold.x
+            let deltaY = limb.y - hold.y
+            let distance = Math.sqrt((deltaX * deltaX) + (deltaY * deltaY))
+            if (distance <= hold.radius + this.LIMB_HOLD_THRESHOLD) {
+                // Now check if the limb has moved too much
+                if (limb.history.distanceMoved[1] > this.LIMB_HOLD_MAX_FRAME_MOVEMENT) {
+                    return false;
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public AnnotateRecording (inputRecording: Recording, routeMap: Route) {
         const maxHistory:number = 30
 
         var positionHistory: BodyPosition[]
+        // For each frame, we'll look back in history and figure out how far it's moved in the past maxHistory frames
         for (var frame of inputRecording.frames) {
+            // First we'll check which (if any) limbs are on holds in this frame.
+            // No need to check hips and shoulders and stuff.
+            frame.leftHand.onHold = this.LimbOnHold(frame.leftHand, routeMap)
+            frame.rightHand.onHold = this.LimbOnHold(frame.rightHand, routeMap)
+            frame.leftFoot.onHold = this.LimbOnHold(frame.leftFoot, routeMap)
+            frame.rightFoot.onHold = this.LimbOnHold(frame.rightFoot, routeMap)           
+            // We'll store the distance each limb moved for each frame count between 0 and maxHistory
+            // so later on we can say leftHand.history.distanceMoved[1] or leftHand.history.distanceMoved[10]
+            // for 1 or 10 frames
             for (var i = 0; i<maxHistory; i++) {
+                // Determine what frame we'll use to compare
                 var deltaFrame : BodyPosition
                 if (positionHistory.length > i) {
                     deltaFrame = positionHistory[i]
@@ -157,11 +190,11 @@ export class Positioner {
         let expertRecording = await this.LoadRecording("Route1Expert.json")
         let noviceRecording = await this.LoadRecording("Route1Novice1.json")
         
-        //let routeMap = await this.LoadRoute("Route1.json")
+        let routeMap = await this.LoadRoute("Route1.json")
 
         // Add movement history to each of the recordings
-        this.AnnotateRecording(expertRecording)
-        this.AnnotateRecording(noviceRecording)
+        this.AnnotateRecording(expertRecording, routeMap)
+        this.AnnotateRecording(noviceRecording, routeMap)
 
         let firstPos = noviceRecording.frames[0]
 
