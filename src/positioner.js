@@ -70,6 +70,8 @@ var Positioner = /** @class */ (function () {
         this.HOLD_RADIUS_MULTIPLIER = 2;
         this.LIMB_HOLD_THRESHOLD = 5;
         this.LIMB_HOLD_MAX_FRAME_MOVEMENT = 20;
+        /* When limb occluded max frame to check on each side for non-occluded limb */
+        this.MAX_OCCLUDE_CHECK_FRAMES = 10;
     }
     Positioner.prototype.LimbDistance = function (Limb1, Limb2) {
         var deltaX = Limb1.x - Limb2.x;
@@ -184,6 +186,203 @@ var Positioner = /** @class */ (function () {
         }
         return false;
     };
+    Positioner.prototype.FillInOcclusions = function (recording) {
+        for (var index = 0; index < recording.frames.length; index++) {
+            var curFrame = recording.frames[index];
+            // LEFT HAND
+            if (curFrame.leftHand.occluded) {
+                // Search ahead 5 frames on each side for non-occluded limb
+                for (var offset = 1; offset < this.MAX_OCCLUDE_CHECK_FRAMES; offset++) {
+                    var nextFrame = recording.frames[index + offset];
+                    if (nextFrame && !nextFrame.leftHand.occluded) {
+                        curFrame.leftHand = nextFrame.leftHand;
+                        break;
+                    }
+                    var prevFrame = recording.frames[index - offset];
+                    if (prevFrame && !prevFrame.leftHand.occluded) {
+                        curFrame.leftHand = prevFrame.leftHand;
+                        break;
+                    }
+                }
+            }
+            // LEFT ELBOW
+            if (curFrame.leftElbow.occluded) {
+                // Search ahead 5 frames on each side for non-occluded limb
+                for (var offset = 1; offset < this.MAX_OCCLUDE_CHECK_FRAMES; offset++) {
+                    var nextFrame = recording.frames[index + offset];
+                    if (nextFrame && !nextFrame.leftElbow.occluded) {
+                        curFrame.leftElbow = nextFrame.leftElbow;
+                        break;
+                    }
+                    var prevFrame = recording.frames[index - offset];
+                    if (prevFrame && !prevFrame.leftElbow.occluded) {
+                        curFrame.leftElbow = prevFrame.leftElbow;
+                        break;
+                    }
+                }
+            }
+            // LEFT SHOULDER
+            if (curFrame.leftShoulder.occluded) {
+                // Search ahead 5 frames on each side for non-occluded limb
+                for (var offset = 1; offset < this.MAX_OCCLUDE_CHECK_FRAMES; offset++) {
+                    var nextFrame = recording.frames[index + offset];
+                    if (nextFrame && !nextFrame.leftShoulder.occluded) {
+                        curFrame.leftShoulder = nextFrame.leftShoulder;
+                        break;
+                    }
+                    var prevFrame = recording.frames[index - offset];
+                    if (prevFrame && !prevFrame.leftShoulder.occluded) {
+                        curFrame.leftShoulder = prevFrame.leftShoulder;
+                        break;
+                    }
+                }
+            }
+            // LEFT HIP
+            if (curFrame.leftHip.occluded) {
+                // Search ahead 5 frames on each side for non-occluded limb
+                for (var offset = 1; offset < this.MAX_OCCLUDE_CHECK_FRAMES; offset++) {
+                    var nextFrame = recording.frames[index + offset];
+                    if (nextFrame && !nextFrame.leftHip.occluded) {
+                        curFrame.leftHip = nextFrame.leftHip;
+                        break;
+                    }
+                    var prevFrame = recording.frames[index - offset];
+                    if (prevFrame && !prevFrame.leftHip.occluded) {
+                        curFrame.leftHip = prevFrame.leftHip;
+                        break;
+                    }
+                }
+            }
+            // LEFT KNEE
+            if (curFrame.leftKnee.occluded) {
+                // Search ahead 5 frames on each side for non-occluded limb
+                for (var offset = 1; offset < this.MAX_OCCLUDE_CHECK_FRAMES; offset++) {
+                    var nextFrame = recording.frames[index + offset];
+                    if (nextFrame && !nextFrame.leftKnee.occluded) {
+                        curFrame.leftKnee = nextFrame.leftKnee;
+                        break;
+                    }
+                    var prevFrame = recording.frames[index - offset];
+                    if (prevFrame && !prevFrame.leftKnee.occluded) {
+                        curFrame.leftKnee = prevFrame.leftKnee;
+                        break;
+                    }
+                }
+            }
+            // LEFT FOOT
+            if (curFrame.leftFoot.occluded) {
+                // Search ahead 5 frames on each side for non-occluded limb
+                for (var offset = 1; offset < this.MAX_OCCLUDE_CHECK_FRAMES; offset++) {
+                    var nextFrame = recording.frames[index + offset];
+                    if (nextFrame && !nextFrame.leftFoot.occluded) {
+                        curFrame.leftFoot = nextFrame.leftFoot;
+                        break;
+                    }
+                    var prevFrame = recording.frames[index - offset];
+                    if (prevFrame && !prevFrame.leftFoot.occluded) {
+                        curFrame.leftFoot = prevFrame.leftFoot;
+                        break;
+                    }
+                }
+            }
+            // LEFT HAND
+            if (curFrame.rightHand.occluded) {
+                // Search ahead 5 frames on each side for non-occluded limb
+                for (var offset = 1; offset < this.MAX_OCCLUDE_CHECK_FRAMES; offset++) {
+                    var nextFrame = recording.frames[index + offset];
+                    if (nextFrame && !nextFrame.rightHand.occluded) {
+                        curFrame.rightHand = nextFrame.rightHand;
+                        break;
+                    }
+                    var prevFrame = recording.frames[index - offset];
+                    if (prevFrame && !prevFrame.rightHand.occluded) {
+                        curFrame.rightHand = prevFrame.rightHand;
+                        break;
+                    }
+                }
+            }
+            // right ELBOW
+            if (curFrame.rightElbow.occluded) {
+                // Search ahead 5 frames on each side for non-occluded limb
+                for (var offset = 1; offset < this.MAX_OCCLUDE_CHECK_FRAMES; offset++) {
+                    var nextFrame = recording.frames[index + offset];
+                    if (nextFrame && !nextFrame.rightElbow.occluded) {
+                        curFrame.rightElbow = nextFrame.rightElbow;
+                        break;
+                    }
+                    var prevFrame = recording.frames[index - offset];
+                    if (prevFrame && !prevFrame.rightElbow.occluded) {
+                        curFrame.rightElbow = prevFrame.rightElbow;
+                        break;
+                    }
+                }
+            }
+            // right SHOULDER
+            if (curFrame.rightShoulder.occluded) {
+                // Search ahead 5 frames on each side for non-occluded limb
+                for (var offset = 1; offset < this.MAX_OCCLUDE_CHECK_FRAMES; offset++) {
+                    var nextFrame = recording.frames[index + offset];
+                    if (nextFrame && !nextFrame.rightShoulder.occluded) {
+                        curFrame.rightShoulder = nextFrame.rightShoulder;
+                        break;
+                    }
+                    var prevFrame = recording.frames[index - offset];
+                    if (prevFrame && !prevFrame.rightShoulder.occluded) {
+                        curFrame.rightShoulder = prevFrame.rightShoulder;
+                        break;
+                    }
+                }
+            }
+            // right HIP
+            if (curFrame.rightHip.occluded) {
+                // Search ahead 5 frames on each side for non-occluded limb
+                for (var offset = 1; offset < this.MAX_OCCLUDE_CHECK_FRAMES; offset++) {
+                    var nextFrame = recording.frames[index + offset];
+                    if (nextFrame && !nextFrame.rightHip.occluded) {
+                        curFrame.rightHip = nextFrame.rightHip;
+                        break;
+                    }
+                    var prevFrame = recording.frames[index - offset];
+                    if (prevFrame && !prevFrame.rightHip.occluded) {
+                        curFrame.rightHip = prevFrame.rightHip;
+                        break;
+                    }
+                }
+            }
+            // right KNEE
+            if (curFrame.rightKnee.occluded) {
+                // Search ahead 5 frames on each side for non-occluded limb
+                for (var offset = 1; offset < this.MAX_OCCLUDE_CHECK_FRAMES; offset++) {
+                    var nextFrame = recording.frames[index + offset];
+                    if (nextFrame && !nextFrame.rightKnee.occluded) {
+                        curFrame.rightKnee = nextFrame.rightKnee;
+                        break;
+                    }
+                    var prevFrame = recording.frames[index - offset];
+                    if (prevFrame && !prevFrame.rightKnee.occluded) {
+                        curFrame.rightKnee = prevFrame.rightKnee;
+                        break;
+                    }
+                }
+            }
+            // right FOOT
+            if (curFrame.rightFoot.occluded) {
+                // Search ahead 5 frames on each side for non-occluded limb
+                for (var offset = 1; offset < this.MAX_OCCLUDE_CHECK_FRAMES; offset++) {
+                    var nextFrame = recording.frames[index + offset];
+                    if (nextFrame && !nextFrame.rightFoot.occluded) {
+                        curFrame.rightFoot = nextFrame.rightFoot;
+                        break;
+                    }
+                    var prevFrame = recording.frames[index - offset];
+                    if (prevFrame && !prevFrame.rightFoot.occluded) {
+                        curFrame.rightFoot = prevFrame.rightFoot;
+                        break;
+                    }
+                }
+            }
+        }
+    };
     Positioner.prototype.AnnotateRecording = function (inputRecording, routeMap) {
         var maxHistory = 30;
         var positionHistory = [];
@@ -264,6 +463,8 @@ var Positioner = /** @class */ (function () {
                 console.log("Loaded expert climber with " + expertRecording.frames.length + " frames");
                 console.log("Loaded novice climber with " + noviceRecording.frames.length + " frames");
                 console.log("Loaded route \"" + route.name + "\" with " + route.holds.length + " holds");
+                this.FillInOcclusions(expertRecording);
+                this.FillInOcclusions(noviceRecording);
                 // Add movement history and frames where limbs are on holds to each of the recordings
                 this.AnnotateRecording(expertRecording, route);
                 this.AnnotateRecording(noviceRecording, route);
