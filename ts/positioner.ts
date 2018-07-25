@@ -498,8 +498,8 @@ export class Positioner {
         }
 
 
-        RenderSet.AddBodyPosition(animationSet[this.curFrame].nextDelta.expertFrame, expertColor)
-        RenderSet.AddBodyPosition(animationSet[this.curFrame].nextDelta.noviceFrame, noviceColor)
+        RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.expertFrame, expertColor)
+        RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.noviceFrame, noviceColor)
 
         // repeat with the interval of 2 seconds
         let timerId = setInterval(() => {
@@ -508,8 +508,8 @@ export class Positioner {
                 this.curFrame = 0
             }
             RenderSet.ClearBodyPositions();
-            RenderSet.AddBodyPosition(animationSet[this.curFrame].nextDelta.expertFrame, expertColor)
-            RenderSet.AddBodyPosition(animationSet[this.curFrame].nextDelta.noviceFrame, noviceColor)
+            RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.expertFrame, expertColor)
+            RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.noviceFrame, noviceColor)
          }, 250);
 
         /* This next from Kiran 

@@ -481,16 +481,16 @@ var Positioner = /** @class */ (function () {
                         nextDelta: nextDelta
                     });
                 }
-                RenderSet.AddBodyPosition(animationSet[this.curFrame].nextDelta.expertFrame, expertColor);
-                RenderSet.AddBodyPosition(animationSet[this.curFrame].nextDelta.noviceFrame, noviceColor);
+                RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.expertFrame, expertColor);
+                RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.noviceFrame, noviceColor);
                 timerId = setInterval(function () {
                     _this.curFrame++;
                     if (_this.curFrame == animationSet.length) {
                         _this.curFrame = 0;
                     }
                     RenderSet.ClearBodyPositions();
-                    RenderSet.AddBodyPosition(animationSet[_this.curFrame].nextDelta.expertFrame, expertColor);
-                    RenderSet.AddBodyPosition(animationSet[_this.curFrame].nextDelta.noviceFrame, noviceColor);
+                    RenderSet.AddBodyPosition(animationSet[_this.curFrame].bestDelta.expertFrame, expertColor);
+                    RenderSet.AddBodyPosition(animationSet[_this.curFrame].bestDelta.noviceFrame, noviceColor);
                 }, 250);
                 return [2 /*return*/];
             });
