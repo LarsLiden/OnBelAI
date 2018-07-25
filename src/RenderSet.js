@@ -76,6 +76,7 @@ var RenderSet = /** @class */ (function () {
         });
     };
     RenderSet.lines = [];
+    RenderSet.suggestions = [];
     return RenderSet;
 }());
 export { RenderSet };

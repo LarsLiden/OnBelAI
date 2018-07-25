@@ -5,6 +5,8 @@ import { RenderSet } from './RenderSet'
 import { Recording, Delta, BodyPosition, AnimationSet, LimbPosition, LimbDelta, LimbHistory, Route, HoldPosition, Color } from './models';
 import { Suggester } from './suggester';
 import { TTYAgent } from './TTYAgent';
+import { pbkdf2 } from 'crypto';
+import { FORMERR } from 'dns';
 
 let expertRecordingRaw = require(`./data/joints_route2_climb2.json`) 
 let noviceRecordingRaw = require(`./data/joints_route2_climb4.json`) 
@@ -47,6 +49,8 @@ export class Positioner {
     private HOLD_RADIUS_MULTIPLIER = 2;
     private LIMB_HOLD_THRESHOLD = 5;
     private LIMB_HOLD_MAX_FRAME_MOVEMENT = 20;
+    /* When limb occluded max frame to check on each side for non-occluded limb */
+    private MAX_OCCLUDE_CHECK_FRAMES = 10
 
     public LimbDistance(Limb1: LimbPosition, Limb2: LimbPosition) : number {
         let deltaX = Limb1.x - Limb2.x
@@ -61,6 +65,8 @@ export class Positioner {
         let matched = this.IsMatched(distance)
 
         return {
+            deltaX: expertLimb.x - noviceLimb.x,
+            deltaY: expertLimb.y - noviceLimb.y,
             distance,
             matched,
             occluded: noviceLimb.occluded
@@ -80,7 +86,7 @@ export class Positioner {
     public GetDeltas(expert: Recording, novice: BodyPosition): Delta[] {
         return expert.frames.map(e => this.GetDelta(e, novice))
     }
-
+    
     public GetBestExpertFrame(deltas: Delta[], novice: BodyPosition): Delta {
 
         // Get largest match
@@ -181,6 +187,217 @@ export class Positioner {
         return false;
     }
 
+    public FillInOcclusions(recording: Recording) {
+
+        for (let index = 0; index < recording.frames.length; index++) {
+            let curFrame = recording.frames[index]
+
+            // LEFT HAND
+            if (curFrame.leftHand.occluded) {
+                // Search ahead 5 frames on each side for non-occluded limb
+                for (let offset = 1; offset < this.MAX_OCCLUDE_CHECK_FRAMES; offset++) {
+                    let nextFrame = recording.frames[index+offset]
+                    if (nextFrame && !nextFrame.leftHand.occluded) {
+                        curFrame.leftHand = nextFrame.leftHand
+                        break
+                    }
+                    let prevFrame = recording.frames[index-offset]
+                    if (prevFrame && !prevFrame.leftHand.occluded) {
+                        curFrame.leftHand = prevFrame.leftHand
+                        break
+                    }
+                }
+            }
+
+            // LEFT ELBOW
+            if (curFrame.leftElbow.occluded) {
+                // Search ahead 5 frames on each side for non-occluded limb
+                for (let offset = 1; offset < this.MAX_OCCLUDE_CHECK_FRAMES; offset++) {
+                    let nextFrame = recording.frames[index+offset]
+                    if (nextFrame && !nextFrame.leftElbow.occluded) {
+                        curFrame.leftElbow = nextFrame.leftElbow
+                        break
+                    }
+                    let prevFrame = recording.frames[index-offset]
+                    if (prevFrame && !prevFrame.leftElbow.occluded) {
+                        curFrame.leftElbow = prevFrame.leftElbow
+                        break
+                    }
+                }
+            }
+
+            // LEFT SHOULDER
+            if (curFrame.leftShoulder.occluded) {
+                // Search ahead 5 frames on each side for non-occluded limb
+                for (let offset = 1; offset < this.MAX_OCCLUDE_CHECK_FRAMES; offset++) {
+                    let nextFrame = recording.frames[index+offset]
+                    if (nextFrame && !nextFrame.leftShoulder.occluded) {
+                        curFrame.leftShoulder = nextFrame.leftShoulder
+                        break
+                    }
+                    let prevFrame = recording.frames[index-offset]
+                    if (prevFrame && !prevFrame.leftShoulder.occluded) {
+                        curFrame.leftShoulder = prevFrame.leftShoulder
+                        break
+                    }
+                }
+            }
+
+            // LEFT HIP
+            if (curFrame.leftHip.occluded) {
+                // Search ahead 5 frames on each side for non-occluded limb
+                for (let offset = 1; offset < this.MAX_OCCLUDE_CHECK_FRAMES; offset++) {
+                    let nextFrame = recording.frames[index+offset]
+                    if (nextFrame && !nextFrame.leftHip.occluded) {
+                        curFrame.leftHip = nextFrame.leftHip
+                        break
+                    }
+                    let prevFrame = recording.frames[index-offset]
+                    if (prevFrame && !prevFrame.leftHip.occluded) {
+                        curFrame.leftHip = prevFrame.leftHip
+                        break
+                    }
+                }
+            }
+
+            // LEFT KNEE
+            if (curFrame.leftKnee.occluded) {
+                // Search ahead 5 frames on each side for non-occluded limb
+                for (let offset = 1; offset < this.MAX_OCCLUDE_CHECK_FRAMES; offset++) {
+                    let nextFrame = recording.frames[index+offset]
+                    if (nextFrame && !nextFrame.leftKnee.occluded) {
+                        curFrame.leftKnee = nextFrame.leftKnee
+                        break
+                    }
+                    let prevFrame = recording.frames[index-offset]
+                    if (prevFrame && !prevFrame.leftKnee.occluded) {
+                        curFrame.leftKnee = prevFrame.leftKnee
+                        break
+                    }
+                }
+            }
+
+            // LEFT FOOT
+            if (curFrame.leftFoot.occluded) {
+                // Search ahead 5 frames on each side for non-occluded limb
+                for (let offset = 1; offset < this.MAX_OCCLUDE_CHECK_FRAMES; offset++) {
+                    let nextFrame = recording.frames[index+offset]
+                    if (nextFrame && !nextFrame.leftFoot.occluded) {
+                        curFrame.leftFoot = nextFrame.leftFoot
+                        break
+                    }
+                    let prevFrame = recording.frames[index-offset]
+                    if (prevFrame && !prevFrame.leftFoot.occluded) {
+                        curFrame.leftFoot = prevFrame.leftFoot
+                        break
+                    }
+                }
+            }
+
+            // LEFT HAND
+            if (curFrame.rightHand.occluded) {
+                // Search ahead 5 frames on each side for non-occluded limb
+                for (let offset = 1; offset < this.MAX_OCCLUDE_CHECK_FRAMES; offset++) {
+                    let nextFrame = recording.frames[index+offset]
+                    if (nextFrame && !nextFrame.rightHand.occluded) {
+                        curFrame.rightHand = nextFrame.rightHand
+                        break
+                    }
+                    let prevFrame = recording.frames[index-offset]
+                    if (prevFrame && !prevFrame.rightHand.occluded) {
+                        curFrame.rightHand = prevFrame.rightHand
+                        break
+                    }
+                }
+            }
+
+            // right ELBOW
+            if (curFrame.rightElbow.occluded) {
+                // Search ahead 5 frames on each side for non-occluded limb
+                for (let offset = 1; offset < this.MAX_OCCLUDE_CHECK_FRAMES; offset++) {
+                    let nextFrame = recording.frames[index+offset]
+                    if (nextFrame && !nextFrame.rightElbow.occluded) {
+                        curFrame.rightElbow = nextFrame.rightElbow
+                        break
+                    }
+                    let prevFrame = recording.frames[index-offset]
+                    if (prevFrame && !prevFrame.rightElbow.occluded) {
+                        curFrame.rightElbow = prevFrame.rightElbow
+                        break
+                    }
+                }
+            }
+
+            // right SHOULDER
+            if (curFrame.rightShoulder.occluded) {
+                // Search ahead 5 frames on each side for non-occluded limb
+                for (let offset = 1; offset < this.MAX_OCCLUDE_CHECK_FRAMES; offset++) {
+                    let nextFrame = recording.frames[index+offset]
+                    if (nextFrame && !nextFrame.rightShoulder.occluded) {
+                        curFrame.rightShoulder = nextFrame.rightShoulder
+                        break
+                    }
+                    let prevFrame = recording.frames[index-offset]
+                    if (prevFrame && !prevFrame.rightShoulder.occluded) {
+                        curFrame.rightShoulder = prevFrame.rightShoulder
+                        break
+                    }
+                }
+            }
+
+            // right HIP
+            if (curFrame.rightHip.occluded) {
+                // Search ahead 5 frames on each side for non-occluded limb
+                for (let offset = 1; offset < this.MAX_OCCLUDE_CHECK_FRAMES; offset++) {
+                    let nextFrame = recording.frames[index+offset]
+                    if (nextFrame && !nextFrame.rightHip.occluded) {
+                        curFrame.rightHip = nextFrame.rightHip
+                        break
+                    }
+                    let prevFrame = recording.frames[index-offset]
+                    if (prevFrame && !prevFrame.rightHip.occluded) {
+                        curFrame.rightHip = prevFrame.rightHip
+                        break
+                    }
+                }
+            }
+
+            // right KNEE
+            if (curFrame.rightKnee.occluded) {
+                // Search ahead 5 frames on each side for non-occluded limb
+                for (let offset = 1; offset < this.MAX_OCCLUDE_CHECK_FRAMES; offset++) {
+                    let nextFrame = recording.frames[index+offset]
+                    if (nextFrame && !nextFrame.rightKnee.occluded) {
+                        curFrame.rightKnee = nextFrame.rightKnee
+                        break
+                    }
+                    let prevFrame = recording.frames[index-offset]
+                    if (prevFrame && !prevFrame.rightKnee.occluded) {
+                        curFrame.rightKnee = prevFrame.rightKnee
+                        break
+                    }
+                }
+            }
+
+            // right FOOT
+            if (curFrame.rightFoot.occluded) {
+                // Search ahead 5 frames on each side for non-occluded limb
+                for (let offset = 1; offset < this.MAX_OCCLUDE_CHECK_FRAMES; offset++) {
+                    let nextFrame = recording.frames[index+offset]
+                    if (nextFrame && !nextFrame.rightFoot.occluded) {
+                        curFrame.rightFoot = nextFrame.rightFoot
+                        break
+                    }
+                    let prevFrame = recording.frames[index-offset]
+                    if (prevFrame && !prevFrame.rightFoot.occluded) {
+                        curFrame.rightFoot = prevFrame.rightFoot
+                        break
+                    }
+                }
+            }
+        }
+    }
+
     public AnnotateRecording (inputRecording: Recording, routeMap: Route) {
         const maxHistory:number = 30
 
@@ -259,6 +476,11 @@ export class Positioner {
         console.log(`Loaded novice climber with ${noviceRecording.frames.length} frames`)
         console.log(`Loaded route "${route.name}" with ${route.holds.length} holds`)      
 
+        const suggester = new Suggester();
+
+        this.FillInOcclusions(expertRecording)
+        this.FillInOcclusions(noviceRecording)
+
         // Add movement history and frames where limbs are on holds to each of the recordings
         this.AnnotateRecording(expertRecording, route)
         this.AnnotateRecording(noviceRecording, route)
@@ -280,9 +502,10 @@ export class Positioner {
                 nextDelta
             } as AnimationSet) 
         }
-        
-        RenderSet.AddBodyPosition(animationSet[this.curFrame].nextDelta.expertFrame, expertColor)
-        RenderSet.AddBodyPosition(animationSet[this.curFrame].nextDelta.noviceFrame, noviceColor)
+
+
+        RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.expertFrame, expertColor)
+        RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.noviceFrame, noviceColor)
 
         // repeat with the interval of 2 seconds
         let timerId = setInterval(() => {
@@ -291,19 +514,11 @@ export class Positioner {
                 this.curFrame = 0
             }
             RenderSet.ClearBodyPositions();
-            RenderSet.AddBodyPosition(animationSet[this.curFrame].nextDelta.expertFrame, expertColor)
-            RenderSet.AddBodyPosition(animationSet[this.curFrame].nextDelta.noviceFrame, noviceColor)
-         }, 250);
+            RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.expertFrame, expertColor)
+            RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.noviceFrame, noviceColor)
 
-        /* This next from Kiran 
-        if (nextDelta) {
-            const suggester = new Suggester();
-            const ttyAgent = new TTYAgent();
-            ttyAgent.speak(suggester.getSuggestions(bestDelta));
-            ttyAgent.speak(suggester.getSuggestions(nextDelta));
-        }
-
-        RenderSet.AddBodyPosition(expertRecording.frames[0], expertColor)
-        */
+            RenderSet.suggestions = suggester.getSuggestions(animationSet[this.curFrame].bestDelta)
+            RenderSet.suggestions.concat(suggester.getSuggestions(animationSet[this.curFrame].nextDelta))
+        }, 250);
     }
 }
