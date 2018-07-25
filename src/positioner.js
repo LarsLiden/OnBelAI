@@ -160,7 +160,9 @@ var Positioner = /** @class */ (function () {
             rightArmBent: this.IsLimbBent(novice.rightHand, novice.rightElbow, novice.rightShoulder),
             leftLegBent: this.IsLimbBent(novice.leftFoot, novice.leftKnee, novice.leftHip),
             rightLegBent: this.IsLimbBent(novice.rightFoot, novice.rightShoulder, novice.rightHip),
-            matchCount: matchCount
+            matchCount: matchCount,
+            expertFrame: expert,
+            noviceFrame: novice
         };
     };
     Positioner.prototype.LimbOnHold = function (limb, routeMap) {
@@ -271,15 +273,22 @@ var Positioner = /** @class */ (function () {
                 deltas = this.GetDeltas(expertRecording, firstPos);
                 bestDelta = this.GetBestExpertFrame(deltas, firstPos);
                 nextDelta = this.GetNextHoldChangeFrame(bestDelta, deltas, expertRecording);
-                RenderSet.AddBodyPosition(expertRecording.frames[this.curFrame], expertColor);
+                RenderSet.AddBodyPosition(deltas[this.curFrame].expertFrame, expertColor);
+                RenderSet.AddBodyPosition(deltas[this.curFrame].noviceFrame, noviceColor);
                 timerId = setInterval(function () {
                     _this.curFrame++;
                     if (_this.curFrame == expertRecording.frames.length) {
                         _this.curFrame = 0;
                     }
                     RenderSet.ClearBodyPositions();
+<<<<<<< HEAD
                     RenderSet.AddBodyPosition(expertRecording.frames[_this.curFrame], expertColor);
                 }, 250);
+=======
+                    RenderSet.AddBodyPosition(deltas[_this.curFrame].expertFrame, expertColor);
+                    RenderSet.AddBodyPosition(deltas[_this.curFrame].noviceFrame, noviceColor);
+                }, 1000);
+>>>>>>> d801b4842493e0c5d42d9109df787e1ca44ebf6f
                 return [2 /*return*/];
             });
         });

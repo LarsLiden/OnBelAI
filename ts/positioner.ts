@@ -156,7 +156,9 @@ export class Positioner {
             rightArmBent: this.IsLimbBent(novice.rightHand, novice.rightElbow, novice.rightShoulder),
             leftLegBent: this.IsLimbBent(novice.leftFoot, novice.leftKnee, novice.leftHip),
             rightLegBent: this.IsLimbBent(novice.rightFoot, novice.rightShoulder, novice.rightHip),
-            matchCount
+            matchCount,
+            expertFrame: expert,
+            noviceFrame: novice
         } as Delta
     }
 
@@ -271,7 +273,8 @@ export class Positioner {
         let nextDelta = this.GetNextHoldChangeFrame(bestDelta, deltas, expertRecording)
 
 
-        RenderSet.AddBodyPosition(expertRecording.frames[this.curFrame], expertColor)
+        RenderSet.AddBodyPosition(deltas[this.curFrame].expertFrame, expertColor)
+        RenderSet.AddBodyPosition(deltas[this.curFrame].noviceFrame, noviceColor)
 
         // repeat with the interval of 2 seconds
         let timerId = setInterval(() => {
@@ -280,8 +283,9 @@ export class Positioner {
                 this.curFrame = 0
             }
             RenderSet.ClearBodyPositions();
-            RenderSet.AddBodyPosition(expertRecording.frames[this.curFrame], expertColor)
-        }, 250);
+            RenderSet.AddBodyPosition(deltas[this.curFrame].expertFrame, expertColor)
+            RenderSet.AddBodyPosition(deltas[this.curFrame].noviceFrame, noviceColor)
+         }, 250);
 
         /* This next from Kiran 
         if (nextDelta) {
