@@ -157,7 +157,7 @@ export class RenderSet {
                 
                 let x = h.center[0] / width + offsetX
                 let y = h.center[1] / height + offsetY
-                let r = 0.25 //h.radius * (0.01 / 10)
+                let r = h.radius * (0.1 / 10)
                 console.log(`Putting hold at ${x}, ${y}, ${r}`)
 
                 return {
@@ -171,6 +171,7 @@ export class RenderSet {
                       
                         vert: `
                         precision mediump float;
+
                         attribute vec2 point;
                         attribute float radius;
                         attribute vec4 color;
@@ -184,8 +185,8 @@ export class RenderSet {
 
                         attributes: {
                           point: [x, y],
-                          radius: 1,
-                          color: [h.color.red, h.color.green, h.color.blue, h.color.alpha],
+                          radius: r,
+                          color: [h.color.red, h.color.green, h.color.blue, h.color.alpha]
                         },
                       
                         count: 1,

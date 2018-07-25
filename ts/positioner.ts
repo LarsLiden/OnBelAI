@@ -8,8 +8,8 @@ import { TTYAgent } from './TTYAgent';
 import { pbkdf2 } from 'crypto';
 import { FORMERR } from 'dns';
 
-let expertRecordingRaw = require(`./data/joints_route2_climb2.json`) 
-let noviceRecordingRaw = require(`./data/joints_route2_climb4.json`) 
+let expertRecordingRaw = require(`./data/route2-climb2-experienced-pausing.json`) 
+let noviceRecordingRaw = require(`./data/route2-climb4-novice-pausing.json`) 
 let route = require("./data/route2.json") as Route
 
 // Little hack to adapt the json format
