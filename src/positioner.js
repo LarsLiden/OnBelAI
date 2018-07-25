@@ -84,6 +84,8 @@ var Positioner = /** @class */ (function () {
         var distance = this.LimbDistance(expertLimb, noviceLimb);
         var matched = this.IsMatched(distance);
         return {
+            deltaX: expertLimb.x - noviceLimb.x,
+            deltaY: expertLimb.y - noviceLimb.y,
             distance: distance,
             matched: matched,
             occluded: noviceLimb.occluded

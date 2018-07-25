@@ -65,6 +65,8 @@ export class Positioner {
         let matched = this.IsMatched(distance)
 
         return {
+            deltaX: expertLimb.x - noviceLimb.x,
+            deltaY: expertLimb.y - noviceLimb.y,
             distance,
             matched,
             occluded: noviceLimb.occluded
