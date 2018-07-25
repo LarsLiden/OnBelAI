@@ -4,11 +4,28 @@
 import { RenderSet } from './RenderSet'
 import { Recording, Delta, BodyPosition, LimbPosition, LimbDelta, LimbHistory, Route, HoldPosition } from './models';
 
-let expertRecording = require(`./data/Route1Expert.json`) as Recording
-let noviceRecording = require(`./data/Route1Novice1.json`) as Recording
+let expertRecordingRaw = require(`./data/joints_route2_climb2.json`) 
+let noviceRecordingRaw = require(`./data/joints_route2_climb4.json`) 
 let route = require("./data/route2.json") as Route
 
+// Little hack to adapt the json format
+let expertRecording : Recording = {frames:Array()}
+for (var f in expertRecordingRaw) {
+    console.log(f)
+    let b : BodyPosition = expertRecordingRaw[f][0]
+    expertRecording.frames.push(b)
+}
+
+// Little hack to adapt the json format
+let noviceRecording : Recording  = {frames:Array()}
+for (var f in noviceRecordingRaw) {
+    console.log(f)
+    let b : BodyPosition = noviceRecordingRaw[f][0]
+    noviceRecording.frames.push(b)
+}
+
 console.log(expertRecording)
+console.log(noviceRecording)
 console.log(route)
 
 export class Positioner {
@@ -200,7 +217,7 @@ export class Positioner {
     public async Run() {
         console.log(`Loaded expert climber with ${expertRecording.frames.length} frames`)
         console.log(`Loaded novice climber with ${noviceRecording.frames.length} frames`)
-        console.log(`Loaded route with ${route.holds.length} holds`)      
+        console.log(`Loaded route "${route.name}" with ${route.holds.length} holds`)      
 
         // Add movement history and frames where limbs are on holds to each of the recordings
         this.AnnotateRecording(expertRecording, route)
