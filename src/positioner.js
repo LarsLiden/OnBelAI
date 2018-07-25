@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import { RenderSet } from './RenderSet';
+import { Suggester } from './suggester';
 var expertRecordingRaw = require("./data/joints_route2_climb2.json");
 var noviceRecordingRaw = require("./data/joints_route2_climb4.json");
 var route = require("./data/route2.json");
@@ -457,12 +458,13 @@ var Positioner = /** @class */ (function () {
     };
     Positioner.prototype.Run = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var firstPos, expertColor, noviceColor, animationSet, index, deltas, bestDelta, nextDelta, timerId;
+            var suggester, firstPos, expertColor, noviceColor, animationSet, index, deltas, bestDelta, nextDelta, timerId;
             var _this = this;
             return __generator(this, function (_a) {
                 console.log("Loaded expert climber with " + expertRecording.frames.length + " frames");
                 console.log("Loaded novice climber with " + noviceRecording.frames.length + " frames");
                 console.log("Loaded route \"" + route.name + "\" with " + route.holds.length + " holds");
+                suggester = new Suggester();
                 this.FillInOcclusions(expertRecording);
                 this.FillInOcclusions(noviceRecording);
                 // Add movement history and frames where limbs are on holds to each of the recordings
@@ -491,6 +493,8 @@ var Positioner = /** @class */ (function () {
                     RenderSet.ClearBodyPositions();
                     RenderSet.AddBodyPosition(animationSet[_this.curFrame].bestDelta.expertFrame, expertColor);
                     RenderSet.AddBodyPosition(animationSet[_this.curFrame].bestDelta.noviceFrame, noviceColor);
+                    RenderSet.suggestions = suggester.getSuggestions(animationSet[_this.curFrame].bestDelta);
+                    RenderSet.suggestions.concat(suggester.getSuggestions(animationSet[_this.curFrame].nextDelta));
                 }, 250);
                 return [2 /*return*/];
             });

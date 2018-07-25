@@ -20,6 +20,8 @@ export class RenderSet {
 
     static lines : Array<Line> = []
 
+    public static suggestions: string[] = []
+
     public static ClearBodyPositions() {
         this.lines = []
     }

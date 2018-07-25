@@ -8,10 +8,10 @@ var Suggester = /** @class */ (function () {
             //     'Try straightening your left knee',
             //     'Reach for the next hold using your left hand'];
             // new TTYAgent().speak(retTest);
-            return undefined;
+            return [];
         }
         if (!delta || delta.matchCount) {
-            return undefined;
+            return [];
         }
         var ret = [];
         if (delta.matchCount < 3) {
@@ -146,6 +146,9 @@ var Suggester = /** @class */ (function () {
                     ret.push('Try straightening your left knee');
                 }
             }
+        }
+        if (ret.length == 0) {
+            ret.push("None");
         }
         return ret;
     };

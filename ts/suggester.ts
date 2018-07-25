@@ -11,11 +11,11 @@ export class Suggester {
             //     'Try straightening your left knee',
             //     'Reach for the next hold using your left hand'];
             // new TTYAgent().speak(retTest);
-            return undefined;
+            return [];
         }
 
         if (!delta || delta.matchCount) {
-            return undefined;
+            return [];
         }
 
         const ret: string[] = [];
@@ -155,6 +155,9 @@ export class Suggester {
             }
         }
 
+        if (ret.length == 0) {
+            ret.push("None")
+        }
         return ret;
     }
 

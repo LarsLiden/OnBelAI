@@ -56,6 +56,24 @@ class App extends Component {
       let offsetX = -1
       let offsetY = 1
 
+      document.querySelector("#suggestion1").innerHTML = RenderSet.suggestions[0] ? RenderSet.suggestions[0] : "None"
+    
+      if (RenderSet.suggestions[1]) {
+        document.querySelector("#suggestion2").innerHTML = RenderSet.suggestions[1]
+        document.querySelector("#suggestion2").setAttribute("style", `visibility:visible`)
+      }
+      else {
+        document.querySelector("#suggestion2").setAttribute("style", `visibility:hidden`)
+      }
+
+      if (RenderSet.suggestions[2]) {
+        document.querySelector("#suggestion3").innerHTML = RenderSet.suggestions[1]
+        document.querySelector("#suggestion3").setAttribute("style", `visibility:visible`)
+      }
+      else {
+        document.querySelector("#suggestion3").setAttribute("style", `visibility:hidden`)
+      }
+
       // Width and height seem to be screen size
       //console.log(`Context width: ${width}, height: ${height}`)
 
@@ -68,7 +86,14 @@ class App extends Component {
   }
   
   render() {
-    return ( <div className="Canvas" id="reglTest">  </div> );
+    return (
+      <div>
+        <div className="Suggestion" id="suggestion1">1</div>
+        <div className="Suggestion Position2" id="suggestion2">2</div>
+        <div className="Suggestion Position3" id="suggestion3">3</div>
+        <div className="Canvas" id="reglTest"></div>
+      </div>
+    )
   }
 }
 

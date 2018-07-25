@@ -474,6 +474,8 @@ export class Positioner {
         console.log(`Loaded novice climber with ${noviceRecording.frames.length} frames`)
         console.log(`Loaded route "${route.name}" with ${route.holds.length} holds`)      
 
+        const suggester = new Suggester();
+
         this.FillInOcclusions(expertRecording)
         this.FillInOcclusions(noviceRecording)
 
@@ -510,17 +512,9 @@ export class Positioner {
             RenderSet.ClearBodyPositions();
             RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.expertFrame, expertColor)
             RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.noviceFrame, noviceColor)
-         }, 250);
 
-        /* This next from Kiran 
-        if (nextDelta) {
-            const suggester = new Suggester();
-            const ttyAgent = new TTYAgent();
-            ttyAgent.speak(suggester.getSuggestions(bestDelta));
-            ttyAgent.speak(suggester.getSuggestions(nextDelta));
-        }
-
-        RenderSet.AddBodyPosition(expertRecording.frames[0], expertColor)
-        */
+            RenderSet.suggestions = suggester.getSuggestions(animationSet[this.curFrame].bestDelta)
+            RenderSet.suggestions.concat(suggester.getSuggestions(animationSet[this.curFrame].nextDelta))
+        }, 250);
     }
 }

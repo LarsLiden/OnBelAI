@@ -55,6 +55,21 @@ var App = /** @class */ (function (_super) {
             var height = -HEIGHT / 2;
             var offsetX = -1;
             var offsetY = 1;
+            document.querySelector("#suggestion1").innerHTML = RenderSet.suggestions[0] ? RenderSet.suggestions[0] : "None";
+            if (RenderSet.suggestions[1]) {
+                document.querySelector("#suggestion2").innerHTML = RenderSet.suggestions[1];
+                document.querySelector("#suggestion2").setAttribute("style", "visibility:visible");
+            }
+            else {
+                document.querySelector("#suggestion2").setAttribute("style", "visibility:hidden");
+            }
+            if (RenderSet.suggestions[2]) {
+                document.querySelector("#suggestion3").innerHTML = RenderSet.suggestions[1];
+                document.querySelector("#suggestion3").setAttribute("style", "visibility:visible");
+            }
+            else {
+                document.querySelector("#suggestion3").setAttribute("style", "visibility:hidden");
+            }
             // Width and height seem to be screen size
             //console.log(`Context width: ${width}, height: ${height}`)
             for (var _i = 0, _a = RenderSet.RenderFacets(height, width, offsetX, offsetY); _i < _a.length; _i++) {
@@ -65,7 +80,11 @@ var App = /** @class */ (function (_super) {
         });
     };
     App.prototype.render = function () {
-        return (React.createElement("div", { className: "Canvas", id: "reglTest" }, "  "));
+        return (React.createElement("div", null,
+            React.createElement("div", { className: "Suggestion", id: "suggestion1" }, "1"),
+            React.createElement("div", { className: "Suggestion Position2", id: "suggestion2" }, "2"),
+            React.createElement("div", { className: "Suggestion Position3", id: "suggestion3" }, "3"),
+            React.createElement("div", { className: "Canvas", id: "reglTest" })));
     };
     return App;
 }(Component));
