@@ -3,6 +3,8 @@
 
 import { RenderSet } from './RenderSet'
 import { Recording, Delta, BodyPosition, LimbPosition, LimbDelta, LimbHistory, Route, HoldPosition, Color } from './models';
+import { Suggester } from './suggester';
+import { TTYAgent } from './TTYAgent';
 
 let expertRecordingRaw = require(`./data/joints_route2_climb2.json`) 
 let noviceRecordingRaw = require(`./data/joints_route2_climb4.json`) 
@@ -103,12 +105,36 @@ export class Positioner {
                 bestDelta = d
             } 
         })
+
+        console.log('Best delta index - ' + deltas.findIndex(d => d === bestDelta));
         return bestDelta
     }
 
     /* Return next frame containing a hold change */
-    public GetNextHoldChangeFrame(startDelta: Delta, deltas: Delta[], expert: Recording) {
+    public GetNextHoldChangeFrame(startDelta: Delta, deltas: Delta[], expert: Recording): Delta {
 
+        const bestDeltaIndex = deltas.findIndex(d => startDelta === d);
+        if (bestDeltaIndex === -1) {
+            return;
+        }
+
+        let nextBestIndex = -1;
+        for (let i=bestDeltaIndex+1; i++; i<expert.frames.length) {
+            let d = this.GetDelta(expert.frames[bestDeltaIndex], expert.frames[i]);
+
+            if (!this.IsMatched(d.leftHand.distance) || !this.IsMatched(d.rightHand.distance) || 
+                    !this.IsMatched(d.leftFoot.distance) || !this.IsMatched(d.rightFoot.distance)) {
+                        nextBestIndex = i;
+                        break;
+            }
+        }
+
+        if (nextBestIndex !== -1) {
+            console.log('The next best frame index is - ' + nextBestIndex);
+            return deltas[nextBestIndex];
+        }
+
+        return undefined;
     }
 
     public GetDelta(expert: BodyPosition, novice: BodyPosition): Delta {
@@ -235,6 +261,13 @@ export class Positioner {
         let deltas = this.GetDeltas(expertRecording, firstPos)
         let bestDelta = this.GetBestExpertFrame(deltas, firstPos)
         let nextDelta = this.GetNextHoldChangeFrame(bestDelta, deltas, expertRecording)
+
+        if (nextDelta) {
+            const suggester = new Suggester();
+            const ttyAgent = new TTYAgent();
+            ttyAgent.speak(suggester.getSuggestions(bestDelta));
+            ttyAgent.speak(suggester.getSuggestions(nextDelta));
+        }
 
         RenderSet.AddBodyPosition(expertRecording.frames[0], expertColor)
     }
