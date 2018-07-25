@@ -472,8 +472,9 @@ var Positioner = /** @class */ (function () {
                 // Add movement history and frames where limbs are on holds to each of the recordings
                 this.AnnotateRecording(expertRecording, route);
                 this.AnnotateRecording(noviceRecording, route);
+                RenderSet.AddHolds(route);
                 firstPos = noviceRecording.frames[0];
-                expertColor = { red: 0.75, blue: 0.8, green: 0.8, alpha: 0.9 };
+                expertColor = { red: 0.7, blue: 0.7, green: 0.7, alpha: 0.9 };
                 noviceColor = { red: 0.4, blue: 0.9, green: 0.4, alpha: 1.0 };
                 animationSet = [];
                 for (index in noviceRecording.frames) {
@@ -485,8 +486,8 @@ var Positioner = /** @class */ (function () {
                         nextDelta: nextDelta
                     });
                 }
-                RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.expertFrame, expertColor);
                 RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.noviceFrame, noviceColor);
+                RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.expertFrame, expertColor);
                 timerId = setInterval(function () {
                     _this.curFrame++;
                     if (_this.curFrame == animationSet.length) {

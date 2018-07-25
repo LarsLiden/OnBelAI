@@ -32,7 +32,7 @@ class App extends Component {
    // let height = context.drawingBufferHeight
 
     const canvas = document.querySelector("#reglTest > canvas:first-of-type");
-    canvas.setAttribute("style", `width:${SCALE * WIDTH}px; height: ${SCALE *HEIGHT}px; background-color: black; background-position: center; display:block; background-repeat: no-repeat; background-size: contain; background-image: url(${String(route2background)});`);
+    canvas.setAttribute("style", `margin: auto; width:${SCALE * WIDTH}px; height: ${SCALE *HEIGHT}px; background-color: black; background-position: center; display:block; background-repeat: no-repeat; background-size: contain; background-image: url(${String(route2background)});`);
 
     var lineWidth = 1
     reglObj.clear({
@@ -93,7 +93,7 @@ class App extends Component {
   
   render() {
     return (
-      <div>
+      <div className="Background">
         <div className="Suggestion" id="suggestion1">1</div>
         <div className="Suggestion Position2" id="suggestion2">2</div>
         <div className="Suggestion Position3" id="suggestion3">3</div>

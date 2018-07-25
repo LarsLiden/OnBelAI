@@ -114,7 +114,7 @@ export class RenderSet {
                let x2 = l.end[0]
                let y2 = l.end[1]  
                */            
-                let lineWidth = 5/width
+                let lineWidth = 8/width
                 let p3 = [x1, y1] as Point
                 let p2 = [x2-lineWidth, y2+lineWidth] as Point
                 let p1 = [x2+lineWidth, y2-lineWidth] as Point

@@ -25,12 +25,17 @@
 .Canvas {
   height: 100%;
   width: 100%;
+  align-self: center;
+}
+
+.Background {
+  background-color: black;
 }
 
 .Suggestion {
   position: absolute;
   width: 300px;
-  left: 1200px;
+  left: 1300px;
   margin: 10px;
   font-size: 20px;
   color: black;
@@ -39,14 +44,15 @@
   border-radius: 25px;
   background: #73AD21;
   padding: 20px;
+  top: 100px;
 }
 
 .Position2 {
-  top: 95px
+  top: 195px
 }
 
 .Position3 {
-  top: 190px
+  top: 290px
 }
 
 @keyframes App-logo-spin {

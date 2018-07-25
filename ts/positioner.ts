@@ -488,7 +488,7 @@ export class Positioner {
         RenderSet.AddHolds(route)
 
         let firstPos = noviceRecording.frames[0]
-        let expertColor: Color = {red:0.75, blue: 0.8, green: 0.8, alpha: 0.9}
+        let expertColor: Color = {red:0.7, blue: 0.7, green: 0.7, alpha: 0.9}
         let noviceColor: Color = {red:0.4, blue: 0.9, green: 0.4, alpha: 1.0}
 
         let animationSet: AnimationSet[] = []
@@ -504,8 +504,8 @@ export class Positioner {
         }
 
 
-        RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.expertFrame, expertColor)
         RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.noviceFrame, noviceColor)
+        RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.expertFrame, expertColor)
 
         // repeat with the interval of 2 seconds
         let timerId = setInterval(() => {
@@ -516,6 +516,7 @@ export class Positioner {
             RenderSet.ClearBodyPositions();
             RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.expertFrame, expertColor)
             RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.noviceFrame, noviceColor)
+
 
             //let suggestions = suggester.getSuggestions(animationSet[this.curFrame].bestDelta)
             RenderSet.suggestions = suggester.getSuggestions(animationSet[this.curFrame].nextDelta)
