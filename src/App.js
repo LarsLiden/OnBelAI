@@ -12,8 +12,12 @@ var __extends = (this && this.__extends) || (function () {
 import * as React from 'react';
 import regl from 'regl';
 import { Component } from 'react';
+import { RenderSet } from './RenderSet';
+import { Positioner } from './positioner';
 //import logo from './'  // './logo.svg';
 import './App.css';
+var positioner = new Positioner();
+positioner.Run();
 var App = /** @class */ (function (_super) {
     __extends(App, _super);
     function App() {
@@ -22,33 +26,55 @@ var App = /** @class */ (function (_super) {
     App.prototype.componentDidMount = function () {
         var rootDiv = document.getElementById('reglTest');
         console.log(rootDiv);
-        var reglObj = regl({
-            container: rootDiv,
-        });
-        var canvas = document.querySelector("#reglTest > canvas:first-of-type");
-        canvas.setAttribute("style", "display:block;");
-        reglObj.frame(function (_a) {
-            var tick = _a.tick;
+        var reglObj = regl();
+        var lineWidth = 1;
+        reglObj.frame(function (context) {
+            // context.tick
             reglObj.clear({
-                color: [(tick % 100 * 0.01), 0, 0, 1],
+                color: 0,
                 depth: 1,
             });
+            var width = context.drawingBufferWidth;
+            var height = context.drawingBufferHeight;
+            for (var _i = 0, _a = RenderSet.RenderFacets(height, width); _i < _a.length; _i++) {
+                var facet = _a[_i];
+                reglObj(facet)();
+            }
+            /*
             reglObj({
-                frag: "void main() {\n          gl_FragColor = vec4(1, 0, 0, 1);\n        }",
-                vert: "attribute vec2 position;\n          void main() {\n            gl_Position = vec4(position, 0, 1);\n          }",
+                // In a draw call, we can pass the shader source code to regl
+                frag: `
+                precision mediump float;
+                uniform vec4 color;
+                void main () {
+                  gl_FragColor = color;
+                }`,
+              
+                vert: `
+                precision mediump float;
+                attribute vec2 position;
+                void main () {
+                  gl_Position = vec4(position, 0, 1);
+                }`,
+              
                 attributes: {
-                    position: [
-                        [(tick % 100 * 0.01), -1],
-                        [-1, 0],
-                        [1, 1]
-                    ]
+                  position: [
+                    [-1, 0],
+                    [0, -1],
+                    [1, 1]
+                  ]
                 },
+              
+                uniforms: {
+                  color: [1, 0, 0, 1]
+                },
+              
                 count: 3
-            })();
+              })()*/
         });
     };
     App.prototype.render = function () {
-        return (React.createElement("div", { id: "reglTest" }, "  "));
+        return (React.createElement("div", { className: "Canvas", id: "reglTest" }, "  "));
     };
     return App;
 }(Component));

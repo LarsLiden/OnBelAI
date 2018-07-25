@@ -19,3 +19,53 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.vscode/chrome/Default/Web Data
+.vscode/chrome/Default/Visited Links
+.vscode/chrome/Default/TransportSecurity
+.vscode/chrome/Default/Top Sites
+.vscode/chrome/Default/Thumbnails/LOG.old
+.vscode/chrome/Default/Thumbnails/LOG
+.vscode/chrome/Default/Sync Extension Settings/pkedcjkdefgpdelpbcmbmeomcjbeemfm/LOG.old
+.vscode/chrome/Default/Sync Extension Settings/pkedcjkdefgpdelpbcmbmeomcjbeemfm/LOG
+.vscode/chrome/Default/Sync Data/LevelDB/LOG.old
+.vscode/chrome/Default/Sync Data/LevelDB/LOG
+.vscode/chrome/Default/Session Storage/LOG.old
+.vscode/chrome/Default/Session Storage/LOG
+.vscode/chrome/Default/Session Storage/000003.log
+.vscode/chrome/Default/Preferences
+.vscode/chrome/Default/Network Persistent State
+.vscode/chrome/Default/Login Data
+.vscode/chrome/Default/Local Storage/leveldb/LOG.old
+.vscode/chrome/Default/Local Storage/leveldb/LOG
+.vscode/chrome/Default/Local Storage/leveldb/000003.log
+.vscode/chrome/Default/Last Tabs
+.vscode/chrome/Default/Last Session
+.vscode/chrome/Default/History
+.vscode/chrome/Default/GPUCache/data_1
+.vscode/chrome/Default/Favicons
+.vscode/chrome/Default/Extension State/LOG.old
+.vscode/chrome/Default/Extension State/LOG
+.vscode/chrome/Default/Download Service/EntryDB/MANIFEST-000012
+.vscode/chrome/Default/Download Service/EntryDB/MANIFEST-000006
+.vscode/chrome/Default/Download Service/EntryDB/LOG.old
+.vscode/chrome/Default/Download Service/EntryDB/LOG
+.vscode/chrome/Default/Download Service/EntryDB/CURRENT
+.vscode/chrome/Default/Download Service/EntryDB/000013.log
+.vscode/chrome/Default/Download Service/EntryDB/000007.log
+.vscode/chrome/Default/data_reduction_proxy_leveldb/MANIFEST-000012
+.vscode/chrome/Default/data_reduction_proxy_leveldb/MANIFEST-000006
+.vscode/chrome/Default/data_reduction_proxy_leveldb/LOG.old
+.vscode/chrome/Default/data_reduction_proxy_leveldb/LOG
+.vscode/chrome/Default/data_reduction_proxy_leveldb/CURRENT
+.vscode/chrome/Default/data_reduction_proxy_leveldb/000013.log
+.vscode/chrome/Default/data_reduction_proxy_leveldb/000007.log
+.vscode/chrome/Default/Current Tabs
+.vscode/chrome/Default/Current Session
+.vscode/chrome/Default/Cookies
+.vscode/chrome/Default/Cache/f_000002
+.vscode/chrome/Default/Cache/data_2
+.vscode/chrome/Default/Cache/data_1
+.vscode/chrome/Default/Cache/data_0
+.vscode/chrome/chrome_shutdown_ms.txt
+.vscode/chrome/BrowserMetrics/BrowserMetrics-5B5796A6-2FEC.pma
+.vscode/chrome/BrowserMetrics/BrowserMetrics-5B577165-7700.pma

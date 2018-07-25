@@ -33,40 +33,34 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import * as fs from 'async-file';
-import * as path from 'path';
-var regl = require('regl')({ extensions: 'angle_instanced_arrays' });
-var line2d = require('regl-line2d')(regl);
+/* eslint-disable */
+/* eslint-disable import/first */
+var expertRecording = require("./data/Route1Expert.json");
+var noviceRecording = require("./data/Route1Novice1.json");
+var route2 = require("./data/route2.json");
+import { RenderSet } from './RenderSet';
 var Positioner = /** @class */ (function () {
     function Positioner() {
         /* If less than this threshold, considered to be straight */
         this.BEND_THRESHOLD = 0.1;
         /* If distance is less than this threshold considered to be at some position */
         this.POSITION_THRESHOLD = 3;
+        /* If limb is within LIMB_HOLD_THRESHOLD of hold position * radius multiplier
+        for LIMB_HOLD_MIN_FRAMES, limb is considered to be on that hold */
+        this.HOLD_RADIUS_MULTIPLIER = 2;
+        this.LIMB_HOLD_THRESHOLD = 5;
+        this.LIMB_HOLD_MAX_FRAME_MOVEMENT = 20;
     }
-    Positioner.prototype.LoadRecording = function (fileName) {
-        return __awaiter(this, void 0, void 0, function () {
-            var filepath, recordingJson;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        filepath = path.join(process.cwd(), "./data/" + fileName);
-                        return [4 /*yield*/, fs.readFile(filepath)];
-                    case 1:
-                        recordingJson = _a.sent();
-                        return [2 /*return*/, JSON.parse(recordingJson)];
-                }
-            });
-        });
+    Positioner.prototype.LimbDistance = function (Limb1, Limb2) {
+        var deltaX = Limb1.x - Limb2.x;
+        var deltaY = Limb1.y - Limb2.y;
+        var distance = Math.sqrt((deltaX * deltaX) + (deltaY * deltaY));
+        return distance;
     };
     Positioner.prototype.LimbDelta = function (expertLimb, noviceLimb) {
-        var deltaX = expertLimb.x - noviceLimb.x;
-        var deltaY = expertLimb.y - noviceLimb.y;
-        var distance = Math.sqrt((deltaX * deltaX) + (deltaY * deltaY));
+        var distance = this.LimbDistance(expertLimb, noviceLimb);
         var matched = this.IsMatched(distance);
         return {
-            deltaX: deltaX,
-            deltaY: deltaY,
             distance: distance,
             matched: matched,
             occluded: noviceLimb.occluded
@@ -130,24 +124,86 @@ var Positioner = /** @class */ (function () {
             matchCount: matchCount
         };
     };
+    Positioner.prototype.LimbOnHold = function (limb, routeMap) {
+        for (var _i = 0, _a = routeMap.holds; _i < _a.length; _i++) {
+            var hold = _a[_i];
+            var deltaX = limb.x - hold.x;
+            var deltaY = limb.y - hold.y;
+            var distance = Math.sqrt((deltaX * deltaX) + (deltaY * deltaY));
+            if (distance <= hold.radius + this.LIMB_HOLD_THRESHOLD) {
+                // Now check if the limb has moved too much
+                if (limb.history.distanceMoved[1] > this.LIMB_HOLD_MAX_FRAME_MOVEMENT) {
+                    return false;
+                }
+                return true;
+            }
+        }
+        return false;
+    };
+    Positioner.prototype.AnnotateRecording = function (inputRecording, routeMap) {
+        var maxHistory = 30;
+        var positionHistory;
+        // For each frame, we'll look back in history and figure out how far it's moved in the past maxHistory frames
+        for (var _i = 0, _a = inputRecording.frames; _i < _a.length; _i++) {
+            var frame = _a[_i];
+            // First we'll check which (if any) limbs are on holds in this frame.
+            // No need to check hips and shoulders and stuff.
+            frame.leftHand.onHold = this.LimbOnHold(frame.leftHand, routeMap);
+            frame.rightHand.onHold = this.LimbOnHold(frame.rightHand, routeMap);
+            frame.leftFoot.onHold = this.LimbOnHold(frame.leftFoot, routeMap);
+            frame.rightFoot.onHold = this.LimbOnHold(frame.rightFoot, routeMap);
+            var status_1 = "Frame {$frame.frameNumber} | onHolds: LH {$frame.leftHand.onHold}, RH: {$frame.rightHand.onHold}, LF {$frame.leftFoot.onHold}, RF: {$frame.rightFoot.onHold}";
+            console.log(status_1);
+            // We'll store the distance each limb moved for each frame count between 0 and maxHistory
+            // so later on we can say leftHand.history.distanceMoved[1] or leftHand.history.distanceMoved[10]
+            // for 1 or 10 frames
+            for (var i = 0; i < maxHistory; i++) {
+                // Determine what frame we'll use to compare
+                var deltaFrame;
+                if (positionHistory.length > i) {
+                    deltaFrame = positionHistory[i];
+                }
+                else if (positionHistory.length > 0) {
+                    // We don't have the full buffer yet, so use the oldest
+                    deltaFrame = positionHistory[positionHistory.length - 1];
+                }
+                else {
+                    // Yes, for frame 0 we will compute the delta from itself, which will be 0
+                    deltaFrame = frame;
+                }
+                frame.leftHand.history.distanceMoved.unshift(this.LimbDistance(frame.leftHand, deltaFrame.leftHand));
+                frame.leftElbow.history.distanceMoved.unshift(this.LimbDistance(frame.leftElbow, deltaFrame.leftElbow));
+                frame.leftShoulder.history.distanceMoved.unshift(this.LimbDistance(frame.leftShoulder, deltaFrame.leftShoulder));
+                frame.rightHand.history.distanceMoved.unshift(this.LimbDistance(frame.rightHand, deltaFrame.rightHand));
+                frame.rightElbow.history.distanceMoved.unshift(this.LimbDistance(frame.rightElbow, deltaFrame.rightElbow));
+                frame.rightShoulder.history.distanceMoved.unshift(this.LimbDistance(frame.rightShoulder, deltaFrame.rightShoulder));
+                frame.leftFoot.history.distanceMoved.unshift(this.LimbDistance(frame.leftFoot, deltaFrame.leftFoot));
+                frame.leftKnee.history.distanceMoved.unshift(this.LimbDistance(frame.leftKnee, deltaFrame.leftKnee));
+                frame.rightFoot.history.distanceMoved.unshift(this.LimbDistance(frame.rightFoot, deltaFrame.rightFoot));
+                frame.rightKnee.history.distanceMoved.unshift(this.LimbDistance(frame.rightKnee, deltaFrame.rightKnee));
+                frame.leftHip.history.distanceMoved.unshift(this.LimbDistance(frame.leftHip, deltaFrame.leftHip));
+                frame.rightHip.history.distanceMoved.unshift(this.LimbDistance(frame.rightHip, deltaFrame.rightHip));
+            }
+            positionHistory.unshift(frame);
+            // If we've got more history than we can use, remove the oldest one
+            if (positionHistory.length > maxHistory) {
+                positionHistory.pop();
+            }
+        }
+    };
     Positioner.prototype.Run = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var expertRecording, noviceRecording, firstPos, deltas, bestDelta, nextDelta;
+            var firstPos, deltas, bestDelta, nextDelta;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.LoadRecording("Route1Expert.json")];
-                    case 1:
-                        expertRecording = _a.sent();
-                        return [4 /*yield*/, this.LoadRecording("Route1Novice1.json")];
-                    case 2:
-                        noviceRecording = _a.sent();
-                        firstPos = noviceRecording.frames[0];
-                        deltas = this.GetDeltas(expertRecording, firstPos);
-                        bestDelta = this.GetBestExpertFrame(deltas, firstPos);
-                        nextDelta = this.GetNextHoldChangeFrame(bestDelta, deltas, expertRecording);
-                        line2d.render({ thickness: 4, points: [0, 0, 1, 1, 1, 0], close: true, color: 'red' });
-                        return [2 /*return*/];
-                }
+                // Add movement history and frames where limbs are on holds to each of the recordings
+                this.AnnotateRecording(expertRecording, route2);
+                this.AnnotateRecording(noviceRecording, route2);
+                firstPos = noviceRecording.frames[0];
+                deltas = this.GetDeltas(expertRecording, firstPos);
+                bestDelta = this.GetBestExpertFrame(deltas, firstPos);
+                nextDelta = this.GetNextHoldChangeFrame(bestDelta, deltas, expertRecording);
+                RenderSet.AddBodyPosition(expertRecording.frames[0]);
+                return [2 /*return*/];
             });
         });
     };

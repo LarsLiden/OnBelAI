@@ -19,8 +19,11 @@
 			"type": "chrome",
 			"request": "launch",
 			"url": "http://localhost:3000",
-			"webRoot": "${workspaceRoot}/lib",
-			"userDataDir": "${workspaceRoot}/.vscode/chrome",
+			"webRoot": "${workspaceRoot}/ts",
+            "userDataDir": "${workspaceRoot}/.vscode/chrome",
+            "sourceMapPathOverrides": {
+				"webpack:///src/*": "${webRoot}/*"
+			}
 		}
     ]
 }

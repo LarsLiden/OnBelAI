@@ -1,0 +1,38 @@
+{  
+    "frames": [
+        {
+         "leftHand:" :  {
+             "deltaX": 5.1,
+             "deltaY": 3.1,
+             "onhold": false,
+             "occluded": false
+         },
+         "leftArmBent:" :  true,
+         "rightHand:" :  {
+             "deltaX": 5.1,
+             "deltaY": 3.1,
+             "onhold": false,
+             "occluded": false
+         },
+         "rigthArmBent": false,
+         "leftFoot:" :  {
+             "deltaX": 5.1,
+             "deltaY": 3.1,
+             "onhold": false
+         },
+         "leftKneeBent:" : false,
+         "rightFoot:" :  {
+             "deltaX": 5.1,
+             "deltaY": 3.1,
+             "onhold": false
+         },
+         "rightKneeBent:" : true,
+         "hip:" :  {
+             "deltaX": 5.1,
+             "deltaY": 3.1,
+             "occluded": false
+         }
+     }
+     ]
+ }
+ 

@@ -2,8 +2,17 @@
 import * as React from 'react';
 import regl from 'regl';
 import { Component } from 'react';
+import { RenderSet } from './RenderSet'
+import { Positioner } from './positioner'
 //import logo from './'  // './logo.svg';
 import './App.css';
+
+
+let positioner = new Positioner()
+
+
+positioner.Run()
+
 
 class App extends Component {
 
@@ -11,41 +20,59 @@ class App extends Component {
     const rootDiv = document.getElementById('reglTest');
     console.log(rootDiv);
 
-    var reglObj = regl({
-      container: rootDiv,
-    })
+    var reglObj = regl()
+    var lineWidth = 1
 
-    const canvas = document.querySelector("#reglTest > canvas:first-of-type");
-    canvas.setAttribute("style", "display:block;");
-
-    reglObj.frame(({tick}:any) => {
+    reglObj.frame((context:any) => {
+      // context.tick
       reglObj.clear({
-        color: [(tick % 100 * 0.01), 0, 0, 1],
+        color: 0,//[(tick % 100 * 0.01), 0, 0, 1],
         depth: 1,
       });
 
+      let width = context.drawingBufferWidth
+      let height = context.drawingBufferHeight
+
+      for (let facet of RenderSet.RenderFacets(height, width)) {
+        reglObj(facet)()
+      }
+      /*
       reglObj({
-        frag: `void main() {
-          gl_FragColor = vec4(1, 0, 0, 1);
-        }`,
-        vert: `attribute vec2 position;
-          void main() {
+          // In a draw call, we can pass the shader source code to regl
+          frag: `
+          precision mediump float;
+          uniform vec4 color;
+          void main () {
+            gl_FragColor = color;
+          }`,
+        
+          vert: `
+          precision mediump float;
+          attribute vec2 position;
+          void main () {
             gl_Position = vec4(position, 0, 1);
           }`,
-        attributes: {
-          position: [
-            [(tick % 100 * 0.01), -1],
-            [-1, 0],
-            [1, 1]
-          ]
-        },
-        count: 3
-      })()
+        
+          attributes: {
+            position: [
+              [-1, 0],
+              [0, -1],
+              [1, 1]
+            ]
+          },
+        
+          uniforms: {
+            color: [1, 0, 0, 1]
+          },
+        
+          count: 3
+        })()*/
     });
 
   }
+  
   render() {
-    return ( <div id = "reglTest" >  </div> );
+    return ( <div className="Canvas" id="reglTest">  </div> );
   }
 }
 
