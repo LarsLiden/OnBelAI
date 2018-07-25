@@ -20,9 +20,9 @@ var route2background = require('./data/route2-background.png');
 import './App.css';
 var positioner = new Positioner();
 positioner.Run();
-var SCALE = 0.5;
-var HEIGHT = 1920 * SCALE;
-var WIDTH = 1920 * SCALE;
+export var SCALE = 0.5;
+export var HEIGHT = 1920 * SCALE;
+export var WIDTH = 1920 * SCALE;
 var App = /** @class */ (function (_super) {
     __extends(App, _super);
     function App() {
@@ -37,7 +37,7 @@ var App = /** @class */ (function (_super) {
         // let width = context.drawingBufferWidth
         // let height = context.drawingBufferHeight
         var canvas = document.querySelector("#reglTest > canvas:first-of-type");
-        canvas.setAttribute("style", "width:" + WIDTH + "px; height: " + HEIGHT + "px; background-position: center; display:block; background-repeat: no-repeat; background-size: contain; background-image: url(" + String(route2background) + ");");
+        canvas.setAttribute("style", "width:" + WIDTH + "px; height: " + HEIGHT + "px; background-color: black; background-position: center; display:block; background-repeat: no-repeat; background-size: contain; background-image: url(" + String(route2background) + ");");
         var lineWidth = 1;
         reglObj.clear({
             color: [0, 0, 0, 0],

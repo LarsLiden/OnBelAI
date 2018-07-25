@@ -36,8 +36,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import { RenderSet } from './RenderSet';
-import { Suggester } from './suggester';
-import { TTYAgent } from './TTYAgent';
 var expertRecordingRaw = require("./data/joints_route2_climb2.json");
 var noviceRecordingRaw = require("./data/joints_route2_climb4.json");
 var route = require("./data/route2.json");
@@ -257,7 +255,7 @@ var Positioner = /** @class */ (function () {
     };
     Positioner.prototype.Run = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var firstPos, expertColor, noviceColor, deltas, bestDelta, nextDelta, suggester, ttyAgent;
+            var firstPos, expertColor, noviceColor, deltas, bestDelta, nextDelta;
             return __generator(this, function (_a) {
                 console.log("Loaded expert climber with " + expertRecording.frames.length + " frames");
                 console.log("Loaded novice climber with " + noviceRecording.frames.length + " frames");
@@ -271,17 +269,7 @@ var Positioner = /** @class */ (function () {
                 deltas = this.GetDeltas(expertRecording, firstPos);
                 bestDelta = this.GetBestExpertFrame(deltas, firstPos);
                 nextDelta = this.GetNextHoldChangeFrame(bestDelta, deltas, expertRecording);
-<<<<<<< HEAD
                 RenderSet.AddBodyPosition(expertRecording.frames[111], expertColor);
-=======
-                if (nextDelta) {
-                    suggester = new Suggester();
-                    ttyAgent = new TTYAgent();
-                    ttyAgent.speak(suggester.getSuggestions(bestDelta));
-                    ttyAgent.speak(suggester.getSuggestions(nextDelta));
-                }
-                RenderSet.AddBodyPosition(expertRecording.frames[0], expertColor);
->>>>>>> f5ffb2113e9d9d43260fb2d0f9fcd5ca50a82871
                 return [2 /*return*/];
             });
         });
