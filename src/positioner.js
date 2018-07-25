@@ -118,10 +118,29 @@ var Positioner = /** @class */ (function () {
                 bestDelta = d;
             }
         });
+        console.log('Best delta index - ' + deltas.findIndex(function (d) { return d === bestDelta; }));
         return bestDelta;
     };
     /* Return next frame containing a hold change */
     Positioner.prototype.GetNextHoldChangeFrame = function (startDelta, deltas, expert) {
+        var bestDeltaIndex = deltas.findIndex(function (d) { return startDelta === d; });
+        if (bestDeltaIndex === -1) {
+            return;
+        }
+        var nextBestIndex = -1;
+        for (var i = bestDeltaIndex + 1; i++; i < expert.frames.length) {
+            var d = this.GetDelta(expert.frames[bestDeltaIndex], expert.frames[i]);
+            if (!this.IsMatched(d.leftHand.distance) || !this.IsMatched(d.rightHand.distance) ||
+                !this.IsMatched(d.leftFoot.distance) || !this.IsMatched(d.rightFoot.distance)) {
+                nextBestIndex = i;
+                break;
+            }
+        }
+        if (nextBestIndex !== -1) {
+            console.log('The next best frame index is - ' + nextBestIndex);
+            return deltas[nextBestIndex];
+        }
+        return undefined;
     };
     Positioner.prototype.GetDelta = function (expert, novice) {
         var leftHandDelta = this.LimbDelta(expert.leftHand, novice.leftHand);
@@ -144,7 +163,7 @@ var Positioner = /** @class */ (function () {
         };
     };
     Positioner.prototype.LimbOnHold = function (limb, routeMap) {
-        console.log("Checkling limb position against " + routeMap.holds.length + " holds in route");
+        //console.log(`Checkling limb position against ${routeMap.holds.length} holds in route`)
         for (var _i = 0, _a = routeMap.holds; _i < _a.length; _i++) {
             var hold = _a[_i];
             var deltaX = limb.x - hold.x;
@@ -166,16 +185,22 @@ var Positioner = /** @class */ (function () {
         var maxHistory = 30;
         var positionHistory = [];
         // For each frame, we'll look back in history and figure out how far it's moved in the past maxHistory frames
+        var f = 0;
         for (var _i = 0, _a = inputRecording.frames; _i < _a.length; _i++) {
             var frame = _a[_i];
             // First we'll check which (if any) limbs are on holds in this frame.
             // No need to check hips and shoulders and stuff.
-            console.log("Annotating frame " + frame.frameNumber + " of " + inputRecording.frames.length);
+            //console.log(`Annotating frame ${frame.frameNumber} of ${inputRecording.frames.length}`)
+            console.log("Annotating frame " + f + " of " + inputRecording.frames.length);
             frame.leftHand.onHold = this.LimbOnHold(frame.leftHand, routeMap);
             frame.rightHand.onHold = this.LimbOnHold(frame.rightHand, routeMap);
             frame.leftFoot.onHold = this.LimbOnHold(frame.leftFoot, routeMap);
             frame.rightFoot.onHold = this.LimbOnHold(frame.rightFoot, routeMap);
-            console.log("Frame " + frame.frameNumber + " | onHolds: LH " + frame.leftHand.onHold + ", RH: " + frame.rightHand.onHold + ", LF " + frame.leftFoot.onHold + ", RF: " + frame.rightFoot.onHold);
+            var numLimbsOnHolds = (frame.leftHand.onHold ? 1 : 0) + (frame.rightHand.onHold ? 1 : 0)
+                + (frame.leftFoot.onHold ? 1 : 0) + (frame.rightFoot.onHold ? 1 : 0);
+            if (numLimbsOnHolds > 0) {
+                console.log("Frame " + f + " | " + numLimbsOnHolds + " limbs on holds: LH " + frame.leftHand.onHold + ", RH: " + frame.rightHand.onHold + ", LF " + frame.leftFoot.onHold + ", RF: " + frame.rightFoot.onHold);
+            }
             // We'll store the distance each limb moved for each frame count between 0 and maxHistory
             // so later on we can say leftHand.history.distanceMoved[1] or leftHand.history.distanceMoved[10]
             // for 1 or 10 frames
@@ -225,6 +250,7 @@ var Positioner = /** @class */ (function () {
                 frame.leftHip.history.distanceMoved.unshift(this.LimbDistance(frame.leftHip, deltaFrame.leftHip));
                 frame.rightHip.history.distanceMoved.unshift(this.LimbDistance(frame.rightHip, deltaFrame.rightHip));
             }
+            f = f + 1;
         }
     };
     Positioner.prototype.Run = function () {
@@ -243,7 +269,7 @@ var Positioner = /** @class */ (function () {
                 deltas = this.GetDeltas(expertRecording, firstPos);
                 bestDelta = this.GetBestExpertFrame(deltas, firstPos);
                 nextDelta = this.GetNextHoldChangeFrame(bestDelta, deltas, expertRecording);
-                RenderSet.AddBodyPosition(expertRecording.frames[0], expertColor);
+                RenderSet.AddBodyPosition(expertRecording.frames[111], expertColor);
                 return [2 /*return*/];
             });
         });
