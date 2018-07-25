@@ -516,6 +516,6 @@ export class Positioner {
 
             //let suggestions = suggester.getSuggestions(animationSet[this.curFrame].bestDelta)
             RenderSet.suggestions = suggester.getSuggestions(animationSet[this.curFrame].nextDelta)
-        }, 250);
+        }, 500);
     }
 }

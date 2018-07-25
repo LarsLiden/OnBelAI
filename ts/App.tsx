@@ -14,7 +14,7 @@ let positioner = new Positioner()
 
 positioner.Run()
 
-export const SCALE = 0.5
+export const SCALE = 0.60
 export const HEIGHT = 1920
 export const WIDTH = 1020 
 
