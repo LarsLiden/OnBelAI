@@ -286,7 +286,7 @@ export class Positioner {
         // repeat with the interval of 2 seconds
         let timerId = setInterval(() => {
             this.curFrame++;
-            if (this.curFrame == expertRecording.frames.length) {
+            if (this.curFrame == animationSet.length) {
                 this.curFrame = 0
             }
             RenderSet.ClearBodyPositions();

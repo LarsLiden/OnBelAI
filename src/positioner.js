@@ -284,7 +284,7 @@ var Positioner = /** @class */ (function () {
                 RenderSet.AddBodyPosition(animationSet[this.curFrame].nextDelta.noviceFrame, noviceColor);
                 timerId = setInterval(function () {
                     _this.curFrame++;
-                    if (_this.curFrame == expertRecording.frames.length) {
+                    if (_this.curFrame == animationSet.length) {
                         _this.curFrame = 0;
                     }
                     RenderSet.ClearBodyPositions();
