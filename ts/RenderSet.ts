@@ -1,5 +1,5 @@
 import { BodyPosition, Color } from "./models";
-
+import regl from 'regl';
 
 export interface Point {
     [index: number]: number;
@@ -16,9 +16,54 @@ export interface Facet {
 
 export class RenderSet {
 
-
     static lines : Array<Line> = []
+    public static backgroundImage: any = null;
 
+    public static LoadBackroundImage() {
+        return new Promise((resolve, reject) => {
+            var image = new Image()
+            image.src = 'https://www.dropbox.com/s/xwft920mqn5j9m7/RouteHolds2.png'
+            image.onload = () => {
+                this.backgroundImage = image;
+                resolve(this.backgroundImage)
+            }
+            image.onerror = reject
+        })
+    }
+
+    public static RenderBackground() {
+        return {
+            frag: `
+            precision mediump float;
+            uniform sampler2D texture;
+            varying vec2 uv;
+            void main () {
+              gl_FragColor = texture2D(texture, uv);
+            }`,
+          
+            vert: `
+            precision mediump float;
+            attribute vec2 position;
+            varying vec2 uv;
+            void main () {
+              uv = position;
+              gl_Position = vec4(1.0 - 2.0 * position, 0, 1);
+            }`,
+          
+            attributes: {
+              position: [
+                -2, 0,
+                0, -2,
+                2, 2]
+            },
+          
+            uniforms: {
+              texture: regl.texture(this.backgroundImage)
+            },
+          
+            count: 3
+          }
+    }
     public static AddBodyPosition(bodyPosition: BodyPosition, color: Color) {
         // Line from hand to elbow to shoulder
         this.AddLine(bodyPosition.leftHand.x, bodyPosition.leftHand.y, bodyPosition.leftElbow.x, bodyPosition.leftElbow.y, color)

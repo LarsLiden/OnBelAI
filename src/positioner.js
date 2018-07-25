@@ -1,3 +1,5 @@
+/* eslint-disable */
+/* eslint-disable import/first */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -33,12 +35,29 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-/* eslint-disable */
-/* eslint-disable import/first */
-var expertRecording = require("./data/Route1Expert.json");
-var noviceRecording = require("./data/Route1Novice1.json");
-var route2 = require("./data/route2.json");
 import { RenderSet } from './RenderSet';
+var expertRecordingRaw = require("./data/joints_route2_climb2.json");
+var noviceRecordingRaw = require("./data/joints_route2_climb4.json");
+var route = require("./data/route2.json");
+// Little hack to adapt the json format
+var expertRecording = { frames: Array() };
+for (var f in expertRecordingRaw) {
+    //console.log(f)
+    var b = expertRecordingRaw[f][0];
+    expertRecording.frames.push(b);
+}
+// Little hack to adapt the json format
+var noviceRecording = { frames: Array() };
+for (var f in noviceRecordingRaw) {
+    //console.log(f)
+    var b = noviceRecordingRaw[f][0];
+    noviceRecording.frames.push(b);
+}
+/*
+console.log(expertRecording)
+console.log(noviceRecording)
+console.log(route)
+*/
 var Positioner = /** @class */ (function () {
     function Positioner() {
         /* If less than this threshold, considered to be straight */
@@ -125,6 +144,7 @@ var Positioner = /** @class */ (function () {
         };
     };
     Positioner.prototype.LimbOnHold = function (limb, routeMap) {
+        console.log("Checkling limb position against " + routeMap.holds.length + " holds in route");
         for (var _i = 0, _a = routeMap.holds; _i < _a.length; _i++) {
             var hold = _a[_i];
             var deltaX = limb.x - hold.x;
@@ -132,9 +152,11 @@ var Positioner = /** @class */ (function () {
             var distance = Math.sqrt((deltaX * deltaX) + (deltaY * deltaY));
             if (distance <= hold.radius + this.LIMB_HOLD_THRESHOLD) {
                 // Now check if the limb has moved too much
+                /* Actually this doesn't work because we call LimbOnHold before building history
                 if (limb.history.distanceMoved[1] > this.LIMB_HOLD_MAX_FRAME_MOVEMENT) {
                     return false;
                 }
+                */
                 return true;
             }
         }
@@ -142,34 +164,53 @@ var Positioner = /** @class */ (function () {
     };
     Positioner.prototype.AnnotateRecording = function (inputRecording, routeMap) {
         var maxHistory = 30;
-        var positionHistory;
+        var positionHistory = [];
         // For each frame, we'll look back in history and figure out how far it's moved in the past maxHistory frames
         for (var _i = 0, _a = inputRecording.frames; _i < _a.length; _i++) {
             var frame = _a[_i];
             // First we'll check which (if any) limbs are on holds in this frame.
             // No need to check hips and shoulders and stuff.
+            console.log("Annotating frame " + frame.frameNumber + " of " + inputRecording.frames.length);
             frame.leftHand.onHold = this.LimbOnHold(frame.leftHand, routeMap);
             frame.rightHand.onHold = this.LimbOnHold(frame.rightHand, routeMap);
             frame.leftFoot.onHold = this.LimbOnHold(frame.leftFoot, routeMap);
             frame.rightFoot.onHold = this.LimbOnHold(frame.rightFoot, routeMap);
-            var status_1 = "Frame {$frame.frameNumber} | onHolds: LH {$frame.leftHand.onHold}, RH: {$frame.rightHand.onHold}, LF {$frame.leftFoot.onHold}, RF: {$frame.rightFoot.onHold}";
-            console.log(status_1);
+            console.log("Frame " + frame.frameNumber + " | onHolds: LH " + frame.leftHand.onHold + ", RH: " + frame.rightHand.onHold + ", LF " + frame.leftFoot.onHold + ", RF: " + frame.rightFoot.onHold);
             // We'll store the distance each limb moved for each frame count between 0 and maxHistory
             // so later on we can say leftHand.history.distanceMoved[1] or leftHand.history.distanceMoved[10]
             // for 1 or 10 frames
+            //
+            // Start by adding this frame so deltas with index 0 are also this frame
+            positionHistory.unshift(frame);
+            // If we've got more history than we can use, remove the oldest one
+            if (positionHistory.length > maxHistory) {
+                positionHistory.pop();
+            }
+            // Make sure our arrays actually exist because they don't when the file is first loaded
+            // This is probably a terrible pattern 
+            var zeroHistory = { distanceMoved: [0] };
+            frame.leftHand.history = zeroHistory;
+            frame.leftHand.history = zeroHistory;
+            frame.leftElbow.history = zeroHistory;
+            frame.leftShoulder.history = zeroHistory;
+            frame.rightHand.history = zeroHistory;
+            frame.rightElbow.history = zeroHistory;
+            frame.rightShoulder.history = zeroHistory;
+            frame.leftFoot.history = zeroHistory;
+            frame.leftKnee.history = zeroHistory;
+            frame.rightFoot.history = zeroHistory;
+            frame.rightKnee.history = zeroHistory;
+            frame.leftHip.history = zeroHistory;
+            frame.rightHip.history = zeroHistory;
             for (var i = 0; i < maxHistory; i++) {
                 // Determine what frame we'll use to compare
                 var deltaFrame;
                 if (positionHistory.length > i) {
                     deltaFrame = positionHistory[i];
                 }
-                else if (positionHistory.length > 0) {
+                else {
                     // We don't have the full buffer yet, so use the oldest
                     deltaFrame = positionHistory[positionHistory.length - 1];
-                }
-                else {
-                    // Yes, for frame 0 we will compute the delta from itself, which will be 0
-                    deltaFrame = frame;
                 }
                 frame.leftHand.history.distanceMoved.unshift(this.LimbDistance(frame.leftHand, deltaFrame.leftHand));
                 frame.leftElbow.history.distanceMoved.unshift(this.LimbDistance(frame.leftElbow, deltaFrame.leftElbow));
@@ -184,26 +225,36 @@ var Positioner = /** @class */ (function () {
                 frame.leftHip.history.distanceMoved.unshift(this.LimbDistance(frame.leftHip, deltaFrame.leftHip));
                 frame.rightHip.history.distanceMoved.unshift(this.LimbDistance(frame.rightHip, deltaFrame.rightHip));
             }
-            positionHistory.unshift(frame);
-            // If we've got more history than we can use, remove the oldest one
-            if (positionHistory.length > maxHistory) {
-                positionHistory.pop();
-            }
         }
     };
     Positioner.prototype.Run = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var firstPos, deltas, bestDelta, nextDelta;
+            var firstPos, expertColor, noviceColor, deltas, bestDelta, nextDelta;
             return __generator(this, function (_a) {
-                // Add movement history and frames where limbs are on holds to each of the recordings
-                this.AnnotateRecording(expertRecording, route2);
-                this.AnnotateRecording(noviceRecording, route2);
-                firstPos = noviceRecording.frames[0];
-                deltas = this.GetDeltas(expertRecording, firstPos);
-                bestDelta = this.GetBestExpertFrame(deltas, firstPos);
-                nextDelta = this.GetNextHoldChangeFrame(bestDelta, deltas, expertRecording);
-                RenderSet.AddBodyPosition(expertRecording.frames[0]);
-                return [2 /*return*/];
+                switch (_a.label) {
+                    case 0:
+                        console.log("Loaded expert climber with " + expertRecording.frames.length + " frames");
+                        console.log("Loaded novice climber with " + noviceRecording.frames.length + " frames");
+                        console.log("Loaded route \"" + route.name + "\" with " + route.holds.length + " holds");
+                        // Load background image
+                        return [4 /*yield*/, RenderSet.LoadBackroundImage()
+                            // Add movement history and frames where limbs are on holds to each of the recordings
+                        ];
+                    case 1:
+                        // Load background image
+                        _a.sent();
+                        // Add movement history and frames where limbs are on holds to each of the recordings
+                        this.AnnotateRecording(expertRecording, route);
+                        this.AnnotateRecording(noviceRecording, route);
+                        firstPos = noviceRecording.frames[0];
+                        expertColor = { red: 0.75, blue: 0.8, green: 0.8, alpha: 0.9 };
+                        noviceColor = { red: 0.4, blue: 0.9, green: 0.4, alpha: 1.0 };
+                        deltas = this.GetDeltas(expertRecording, firstPos);
+                        bestDelta = this.GetBestExpertFrame(deltas, firstPos);
+                        nextDelta = this.GetNextHoldChangeFrame(bestDelta, deltas, expertRecording);
+                        RenderSet.AddBodyPosition(expertRecording.frames[0], expertColor);
+                        return [2 /*return*/];
+                }
             });
         });
     };

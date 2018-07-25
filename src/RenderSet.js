@@ -1,21 +1,82 @@
+import regl from 'regl';
 var RenderSet = /** @class */ (function () {
     function RenderSet() {
     }
-    RenderSet.AddBodyPosition = function (bodyPosition) {
-        // Line from hand to elbow
-        this.AddLine(bodyPosition.leftHand.x, bodyPosition.leftHand.y, bodyPosition.leftElbow.x, bodyPosition.leftElbow.y);
+    RenderSet.LoadBackroundImage = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            var image = new Image();
+            image.src = 'https://www.dropbox.com/s/xwft920mqn5j9m7/RouteHolds2.png';
+            image.onload = function () {
+                _this.backgroundImage = image;
+                resolve(_this.backgroundImage);
+            };
+            image.onerror = reject;
+        });
     };
-    RenderSet.AddLine = function (x1, y1, x2, y2) {
-        var line = { start: [x1, y1], end: [x2, y2] };
-        this.lines.push(line);
+    RenderSet.RenderBackground = function () {
+        return {
+            frag: "\n            precision mediump float;\n            uniform sampler2D texture;\n            varying vec2 uv;\n            void main () {\n              gl_FragColor = texture2D(texture, uv);\n            }",
+            vert: "\n            precision mediump float;\n            attribute vec2 position;\n            varying vec2 uv;\n            void main () {\n              uv = position;\n              gl_Position = vec4(1.0 - 2.0 * position, 0, 1);\n            }",
+            attributes: {
+                position: [
+                    -2, 0,
+                    0, -2,
+                    2, 2
+                ]
+            },
+            uniforms: {
+                texture: regl.texture(this.backgroundImage)
+            },
+            count: 3
+        };
     };
-    RenderSet.RenderFacets = function (height, width) {
+    RenderSet.AddBodyPosition = function (bodyPosition, color) {
+        // Line from hand to elbow to shoulder
+        this.AddLine(bodyPosition.leftHand.x, bodyPosition.leftHand.y, bodyPosition.leftElbow.x, bodyPosition.leftElbow.y, color);
+        this.AddLine(bodyPosition.leftElbow.x, bodyPosition.leftElbow.y, bodyPosition.leftShoulder.x, bodyPosition.leftShoulder.y, color);
+        // Right hand to elbow to shoulder
+        this.AddLine(bodyPosition.rightHand.x, bodyPosition.rightHand.y, bodyPosition.rightElbow.x, bodyPosition.rightElbow.y, color);
+        this.AddLine(bodyPosition.rightElbow.x, bodyPosition.rightElbow.y, bodyPosition.rightShoulder.x, bodyPosition.rightShoulder.y, color);
+        // Left leg, foot to knee to hip
+        this.AddLine(bodyPosition.leftFoot.x, bodyPosition.leftFoot.y, bodyPosition.leftKnee.x, bodyPosition.leftKnee.y, color);
+        this.AddLine(bodyPosition.leftKnee.x, bodyPosition.leftKnee.y, bodyPosition.leftHip.x, bodyPosition.leftHip.y, color);
+        // Right leg, foot to knee to hip
+        this.AddLine(bodyPosition.rightFoot.x, bodyPosition.rightFoot.y, bodyPosition.rightKnee.x, bodyPosition.rightKnee.y, color);
+        this.AddLine(bodyPosition.rightKnee.x, bodyPosition.rightKnee.y, bodyPosition.rightHip.x, bodyPosition.rightHip.y, color);
+        // Connect the shoulders
+        this.AddLine(bodyPosition.leftShoulder.x, bodyPosition.leftShoulder.y, bodyPosition.rightShoulder.x, bodyPosition.rightShoulder.y, color);
+        // Connect the hips
+        this.AddLine(bodyPosition.leftHip.x, bodyPosition.leftHip.y, bodyPosition.rightHip.x, bodyPosition.rightHip.y, color);
+        // Shoulders to center of hips
+        // Usually we rely on AddLine filtering out occluded / 0,0 values but the average will break that so check here
+        if ((bodyPosition.leftHip.x * bodyPosition.leftHip.y * bodyPosition.rightHip.x * bodyPosition.rightHip.y) > 0) {
+            var hipCenterX = (bodyPosition.leftHip.x) + (bodyPosition.rightHip.x) / 2;
+            var hipCenterY = (bodyPosition.rightHip.y) + (bodyPosition.rightHip.y) / 2;
+            this.AddLine(hipCenterX, hipCenterY, bodyPosition.leftShoulder.x, bodyPosition.leftShoulder.y, color);
+            this.AddLine(hipCenterX, hipCenterY, bodyPosition.rightShoulder.x, bodyPosition.rightShoulder.y, color);
+        }
+    };
+    RenderSet.AddLine = function (x1, y1, x2, y2, color) {
+        // Only add the line if no points are at 0
+        if ((x1 * y1 * x2 * y2) > 0) {
+            var line = { start: [x1, y1], end: [x2, y2], color: color };
+            this.lines.push(line);
+        }
+    };
+    RenderSet.RenderFacets = function (height, width, offsetX, offsetY, color) {
         return this.lines.map(function (l) {
             // Scaled to screen
-            var x1 = l.start[0] / width;
-            var y1 = l.start[1] / height;
-            var x2 = l.start[0] / width;
-            var y2 = l.start[1] / height;
+            var x1 = l.start[0] / width + offsetX;
+            var y1 = l.start[1] / height + offsetY;
+            var x2 = l.end[0] / width + offsetX;
+            var y2 = l.end[1] / height + offsetY;
+            /*
+            let x1 = l.start[0]
+            let y1 = l.start[1]
+            let x2 = l.end[0]
+            let y2 = l.end[1]
+            */
             var p3 = [x1, y1];
             var p2 = [x2 - 0.2, y2 + 0.2];
             var p1 = [x2 + 0.2, y2 - 0.2];
@@ -28,13 +89,14 @@ var RenderSet = /** @class */ (function () {
                     position: facet
                 },
                 uniforms: {
-                    color: [1, 0, 0, 1]
+                    color: [color.red, color.green, color.blue, color.alpha]
                 },
                 count: 3
             };
         });
     };
     RenderSet.lines = [];
+    RenderSet.backgroundImage = null;
     return RenderSet;
 }());
 export { RenderSet };

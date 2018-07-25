@@ -17,6 +17,7 @@ import { Positioner } from './positioner';
 //import logo from './'  // './logo.svg';
 import './App.css';
 var positioner = new Positioner();
+var backgroundTexture = null;
 positioner.Run();
 var App = /** @class */ (function (_super) {
     __extends(App, _super);
@@ -26,18 +27,40 @@ var App = /** @class */ (function (_super) {
     App.prototype.componentDidMount = function () {
         var rootDiv = document.getElementById('reglTest');
         console.log(rootDiv);
-        var reglObj = regl();
+        var reglObj = regl({
+            container: rootDiv,
+        });
+        var canvas = document.querySelector("#reglTest > canvas:first-of-type");
+        canvas.setAttribute("style", "display:block; width:1080px; height: 1920px;");
         var lineWidth = 1;
+        var lineColor = { red: 0.8, green: 0.8, blue: 0.8, alpha: 0.8 };
+        reglObj.clear({
+            color: [0, 0, 0, 1],
+            depth: 1
+        });
         reglObj.frame(function (context) {
             // context.tick
             reglObj.clear({
-                color: 0,
-                depth: 1,
+                color: [0, 0, 0, 1],
+                depth: 1
             });
-            var width = context.drawingBufferWidth;
-            var height = context.drawingBufferHeight;
-            for (var _i = 0, _a = RenderSet.RenderFacets(height, width); _i < _a.length; _i++) {
+            if (!backgroundTexture && RenderSet.backgroundImage) {
+                backgroundTexture = reglObj.texture(RenderSet.backgroundImage);
+            }
+            if (backgroundTexture) {
+                reglObj(RenderSet.RenderBackground());
+            }
+            //let width = context.drawingBufferWidth
+            //let height = context.drawingBufferHeight
+            var width = 1080 / 2;
+            var height = 1920 / 2;
+            var offsetX = -1;
+            var offsetY = -1;
+            // Width and height seem to be screen size
+            //console.log(`Context width: ${width}, height: ${height}`)
+            for (var _i = 0, _a = RenderSet.RenderFacets(height, width, offsetX, offsetY, lineColor); _i < _a.length; _i++) {
                 var facet = _a[_i];
+                //console.log(facet);
                 reglObj(facet)();
             }
             /*

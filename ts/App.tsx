@@ -9,6 +9,7 @@ import { Color } from './models'
 import './App.css';
 
 let positioner = new Positioner()
+let backgroundTexture: any = null
 
 
 positioner.Run()
@@ -35,12 +36,19 @@ class App extends Component {
 
     reglObj.frame((context:any) => {
       // context.tick
-      
+
       reglObj.clear({
         color: [0,0,0,1],//[(tick % 100 * 0.01), 0, 0, 1],
         depth: 1
       });
       
+      
+      if (!backgroundTexture && RenderSet.backgroundImage) {
+        backgroundTexture = reglObj.texture(RenderSet.backgroundImage)
+      }
+      if (backgroundTexture) {
+        reglObj(RenderSet.RenderBackground())
+      }
 
       //let width = context.drawingBufferWidth
       //let height = context.drawingBufferHeight

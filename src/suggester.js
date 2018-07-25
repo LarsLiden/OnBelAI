@@ -2,6 +2,17 @@ var Suggester = /** @class */ (function () {
     function Suggester() {
     }
     Suggester.prototype.getSuggestions = function (delta) {
+        if (!delta) {
+            //Testing code below
+            // const retTest = ['Try bending your right arm',
+            //     'Try straightening your left knee',
+            //     'Reach for the next hold using your left hand'];
+            // new TTYAgent().speak(retTest);
+            return undefined;
+        }
+        if (!delta || delta.matchCount) {
+            return undefined;
+        }
         var ret = [];
         if (delta.matchCount < 3) {
             // novice and expert frames are not matched

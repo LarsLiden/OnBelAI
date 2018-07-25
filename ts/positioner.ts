@@ -223,6 +223,9 @@ export class Positioner {
         console.log(`Loaded novice climber with ${noviceRecording.frames.length} frames`)
         console.log(`Loaded route "${route.name}" with ${route.holds.length} holds`)      
 
+        // Load background image
+        await RenderSet.LoadBackroundImage()
+
         // Add movement history and frames where limbs are on holds to each of the recordings
         this.AnnotateRecording(expertRecording, route)
         this.AnnotateRecording(noviceRecording, route)
