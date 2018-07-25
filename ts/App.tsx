@@ -67,7 +67,7 @@ class App extends Component {
       }
 
       if (RenderSet.suggestions[2]) {
-        document.querySelector("#suggestion3").innerHTML = RenderSet.suggestions[1]
+        document.querySelector("#suggestion3").innerHTML = RenderSet.suggestions[2]
         document.querySelector("#suggestion3").setAttribute("style", `visibility:visible`)
       }
       else {

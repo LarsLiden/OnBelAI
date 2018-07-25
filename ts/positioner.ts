@@ -39,8 +39,8 @@ export class Positioner {
     /* If less than this threshold, considered to be straight */
     private BEND_THRESHOLD = 0.1
 
-    /* If distance is less than this threshold considered to be at some position */
-    private POSITION_THRESHOLD = 3;
+    /* If distance is less than this threshold considered to be at same position */
+    private POSITION_THRESHOLD = 100;
 
     private curFrame = 0;
 
