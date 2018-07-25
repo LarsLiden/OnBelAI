@@ -54,20 +54,22 @@ export class RenderSet {
         }
     }
 
-    public static RenderFacets(height: number, width: number, color: Color) {
+    public static RenderFacets(height: number, width: number, offsetX: number, offsetY: number, color: Color) {
         return this.lines.map(l =>
             {
                 // Scaled to screen
-                /*
-                let x1 = l.start[0]/width
-                let y1 = l.start[1]/height
-                let x2 = l.start[0]/width
-                let y2 = l.start[1]/height
-                */
+                
+                let x1 = l.start[0]/width + offsetX
+                let y1 = l.start[1]/height + offsetY
+                let x2 = l.end[0]/width + offsetX
+                let y2 = l.end[1]/height + offsetY
+                
+               /*
                let x1 = l.start[0]
                let y1 = l.start[1]
                let x2 = l.end[0]
-               let y2 = l.end[1]              
+               let y2 = l.end[1]  
+               */            
 
                 let p3 = [x1, y1] as Point
                 let p2 = [x2-0.2, y2+0.2] as Point

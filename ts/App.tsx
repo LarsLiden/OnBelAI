@@ -42,14 +42,20 @@ class App extends Component {
       });
       
 
-      let width = context.drawingBufferWidth
-      let height = context.drawingBufferHeight
+      //let width = context.drawingBufferWidth
+      //let height = context.drawingBufferHeight
+      let width = 1080 / 2
+      let height = 1920 / 2
+      let offsetX = -1
+      let offsetY = -1
+
       // Width and height seem to be screen size
       //console.log(`Context width: ${width}, height: ${height}`)
 
-      for (let facet of RenderSet.RenderFacets(height, width, lineColor)) {
-        console.log(facet);
+      for (let facet of RenderSet.RenderFacets(height, width, offsetX, offsetY, lineColor)) {
+        //console.log(facet);
         reglObj(facet)();
+
       }
       /*
       reglObj({
