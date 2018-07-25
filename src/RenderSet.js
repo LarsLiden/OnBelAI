@@ -100,16 +100,16 @@ var RenderSet = /** @class */ (function () {
             // Scaled to screen
             var x = h.center[0] / width + offsetX;
             var y = h.center[1] / height + offsetY;
-            var r = 0.25; //h.radius * (0.01 / 10)
+            var r = h.radius * (0.1 / 10);
             console.log("Putting hold at " + x + ", " + y + ", " + r);
             return {
                 // In a draw call, we can pass the shader source code to regl
                 frag: "\n                        precision highp float;\n                        varying vec4 fragColor;\n                        void main () {\n                          gl_FragColor = fragColor;\n                        }",
-                vert: "\n                        precision mediump float;\n                        attribute vec2 point;\n                        attribute float radius;\n                        attribute vec4 color;\n                        varying vec4 fragColor;\n                        void main () {\n                          gl_Position = vec4(point, 0.0, 1.0);\n                          fragColor = color;\n                          gl_PointSize = radius;\n\n                        }",
+                vert: "\n                        precision mediump float;\n\n                        attribute vec2 point;\n                        attribute float radius;\n                        attribute vec4 color;\n                        varying vec4 fragColor;\n                        void main () {\n                          gl_Position = vec4(point, 0.0, 1.0);\n                          fragColor = color;\n                          gl_PointSize = radius;\n\n                        }",
                 attributes: {
                     point: [x, y],
-                    radius: 1,
-                    color: [h.color.red, h.color.green, h.color.blue, h.color.alpha],
+                    radius: r,
+                    color: [h.color.red, h.color.green, h.color.blue, h.color.alpha]
                 },
                 count: 1,
                 primitive: 'points'

@@ -79,7 +79,7 @@ var App = /** @class */ (function (_super) {
             }
             /*
             for (let hold of RenderSet.RenderHolds(height, width, offsetX, offsetY)) {
-              //console.log(facet);
+              console.log(hold);
               reglObj(hold)();
             }
             */

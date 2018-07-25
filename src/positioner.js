@@ -37,8 +37,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 import { RenderSet } from './RenderSet';
 import { Suggester } from './suggester';
-var expertRecordingRaw = require("./data/joints_route2_climb2.json");
-var noviceRecordingRaw = require("./data/joints_route2_climb4.json");
+var expertRecordingRaw = require("./data/route2-climb2-experienced-pausing.json");
+var noviceRecordingRaw = require("./data/route2-climb4-novice-pausing.json");
 var route = require("./data/route2.json");
 // Little hack to adapt the json format
 var expertRecording = { frames: Array() };
