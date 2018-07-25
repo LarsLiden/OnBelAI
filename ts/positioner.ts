@@ -16,17 +16,23 @@ let route = require("./data/route2.json") as Route
 let expertRecording : Recording = {frames:Array()}
 for (var f in expertRecordingRaw) {
     //console.log(f)
+    let frameNumber: number = Number(f.match(/\d+/)[0])
     let b : BodyPosition = expertRecordingRaw[f][0]
+    b.frameNumber = frameNumber
     expertRecording.frames.push(b)
 }
+expertRecording.frames.sort(function(a, b){return a.frameNumber - b.frameNumber});
 
 // Little hack to adapt the json format
 let noviceRecording : Recording  = {frames:Array()}
 for (var f in noviceRecordingRaw) {
     //console.log(f)
+    let frameNumber: number = Number(f.match(/\d+/)[0])
     let b : BodyPosition = noviceRecordingRaw[f][0]
+    b.frameNumber = frameNumber
     noviceRecording.frames.push(b)
 }
+noviceRecording.frames.sort(function(a, b){return a.frameNumber - b.frameNumber});
 
 /*
 console.log(expertRecording)
