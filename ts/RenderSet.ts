@@ -184,7 +184,7 @@ export class RenderSet {
 
                         attributes: {
                           point: [x, y],
-                          radius: 0.25,
+                          radius: 1,
                           color: [h.color.red, h.color.green, h.color.blue, h.color.alpha],
                         },
                       
