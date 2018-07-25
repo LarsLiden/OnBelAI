@@ -472,9 +472,10 @@ var Positioner = /** @class */ (function () {
                 // Add movement history and frames where limbs are on holds to each of the recordings
                 this.AnnotateRecording(expertRecording, route);
                 this.AnnotateRecording(noviceRecording, route);
+                RenderSet.AddHolds(route);
                 firstPos = noviceRecording.frames[0];
-                expertColor = { red: 0.75, blue: 0.8, green: 0.8, alpha: 0.9 };
-                noviceColor = { red: 0.4, blue: 0.9, green: 0.4, alpha: 1.0 };
+                expertColor = { red: 1, blue: 0.5, green: 0.5, alpha: 0.5 };
+                noviceColor = { red: 0.5, blue: 1, green: 0.5, alpha: 1.0 };
                 animationSet = [];
                 for (index in noviceRecording.frames) {
                     deltas = this.GetDeltas(expertRecording, noviceRecording.frames[index]);
@@ -493,10 +494,10 @@ var Positioner = /** @class */ (function () {
                         _this.curFrame = 0;
                     }
                     RenderSet.ClearBodyPositions();
-                    RenderSet.AddBodyPosition(animationSet[_this.curFrame].bestDelta.expertFrame, expertColor);
                     RenderSet.AddBodyPosition(animationSet[_this.curFrame].bestDelta.noviceFrame, noviceColor);
-                    RenderSet.suggestions = suggester.getSuggestions(animationSet[_this.curFrame].bestDelta);
-                    RenderSet.suggestions.concat(suggester.getSuggestions(animationSet[_this.curFrame].nextDelta));
+                    RenderSet.AddBodyPosition(animationSet[_this.curFrame].bestDelta.expertFrame, expertColor);
+                    //let suggestions = suggester.getSuggestions(animationSet[this.curFrame].bestDelta)
+                    RenderSet.suggestions = suggester.getSuggestions(animationSet[_this.curFrame].nextDelta);
                 }, 250);
                 return [2 /*return*/];
             });

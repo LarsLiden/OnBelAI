@@ -25,12 +25,17 @@
 .Canvas {
   height: 100%;
   width: 100%;
+  align-self: center;
+}
+
+.Background {
+  background-color: black;
 }
 
 .Suggestion {
   position: absolute;
-  width: 250px;
-  left: 520px;
+  width: 300px;
+  left: 1300px;
   margin: 10px;
   font-size: 20px;
   color: black;
@@ -39,14 +44,46 @@
   border-radius: 25px;
   background: #73AD21;
   padding: 20px;
+  top: 100px;
 }
 
 .Position2 {
-  top: 75px
+  top: 195px
 }
 
 .Position3 {
-  top: 150px
+  top: 290px
+}
+
+
+.Novice {
+  position: absolute;
+  width: 300px;
+  left: 100px;
+  margin: 10px;
+  font-size: 20px;
+  color: black;
+  background-color: white;
+  z-index: 100;
+  border-radius: 25px;
+  background: rgb(127,127,255);
+  padding: 20px;
+  top: 100px;
+}
+
+.Expert {
+  position: absolute;
+  width: 300px;
+  left: 100px;
+  margin: 10px;
+  font-size: 20px;
+  color: black;
+  background-color: white;
+  z-index: 100;
+  border-radius: 25px;
+  background: rgb(255,127,127);
+  padding: 20px;
+  top: 290px
 }
 
 @keyframes App-logo-spin {

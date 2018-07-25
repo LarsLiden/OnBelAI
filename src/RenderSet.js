@@ -4,6 +4,13 @@ var RenderSet = /** @class */ (function () {
     RenderSet.ClearBodyPositions = function () {
         this.lines = [];
     };
+    RenderSet.ClearHolds = function () {
+        this.holds = [];
+    };
+    RenderSet.ClearAll = function () {
+        this.ClearBodyPositions();
+        this.ClearHolds();
+    };
     RenderSet.AddBodyPosition = function (bodyPosition, color) {
         // Line from hand to elbow to shoulder
         this.AddLine(bodyPosition.leftElbow.x, bodyPosition.leftElbow.y, bodyPosition.leftHand.x, bodyPosition.leftHand.y, color);
@@ -43,6 +50,19 @@ var RenderSet = /** @class */ (function () {
             this.lines.push(line);
         }
     };
+    RenderSet.AddHolds = function (route) {
+        console.log("Adding holds");
+        var holdColor = { red: 0.8, green: 0.2, blue: 0.8, alpha: 0.8 };
+        for (var _i = 0, _a = route.holds; _i < _a.length; _i++) {
+            var holdPosition = _a[_i];
+            console.log("Adding hold at [" + holdPosition.x + ", " + holdPosition.y + "] with radius " + holdPosition.radius);
+            this.AddHold(holdPosition.x, holdPosition.y, holdPosition.radius, holdColor);
+        }
+    };
+    RenderSet.AddHold = function (centerX, centerY, radius, color) {
+        var hold = { center: [centerX, centerY], radius: radius, color: color, name: "hold" };
+        this.holds.push(hold);
+    };
     RenderSet.RenderFacets = function (height, width, offsetX, offsetY) {
         return this.lines.map(function (l) {
             // Scaled to screen
@@ -56,7 +76,7 @@ var RenderSet = /** @class */ (function () {
             let x2 = l.end[0]
             let y2 = l.end[1]
             */
-            var lineWidth = 5 / width;
+            var lineWidth = 8 / width;
             var p3 = [x1, y1];
             var p2 = [x2 - lineWidth, y2 + lineWidth];
             var p1 = [x2 + lineWidth, y2 - lineWidth];
@@ -75,7 +95,29 @@ var RenderSet = /** @class */ (function () {
             };
         });
     };
+    RenderSet.RenderHolds = function (height, width, offsetX, offsetY) {
+        return this.holds.map(function (h) {
+            // Scaled to screen
+            var x = h.center[0] / width + offsetX;
+            var y = h.center[1] / height + offsetY;
+            var r = 0.25; //h.radius * (0.01 / 10)
+            console.log("Putting hold at " + x + ", " + y + ", " + r);
+            return {
+                // In a draw call, we can pass the shader source code to regl
+                frag: "\n                        precision highp float;\n                        varying vec4 fragColor;\n                        void main () {\n                          gl_FragColor = fragColor;\n                        }",
+                vert: "\n                        precision mediump float;\n                        attribute vec2 point;\n                        attribute float radius;\n                        attribute vec4 color;\n                        varying vec4 fragColor;\n                        void main () {\n                          gl_Position = vec4(point, 0.0, 1.0);\n                          fragColor = color;\n                          gl_PointSize = radius;\n\n                        }",
+                attributes: {
+                    point: [x, y],
+                    radius: 1,
+                    color: [h.color.red, h.color.green, h.color.blue, h.color.alpha],
+                },
+                count: 1,
+                primitive: 'points'
+            };
+        });
+    };
     RenderSet.lines = [];
+    RenderSet.holds = [];
     RenderSet.suggestions = [];
     return RenderSet;
 }());

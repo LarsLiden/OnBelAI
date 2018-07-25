@@ -37,7 +37,7 @@ var App = /** @class */ (function (_super) {
         // let width = context.drawingBufferWidth
         // let height = context.drawingBufferHeight
         var canvas = document.querySelector("#reglTest > canvas:first-of-type");
-        canvas.setAttribute("style", "width:" + SCALE * WIDTH + "px; height: " + SCALE * HEIGHT + "px; background-color: black; background-position: center; display:block; background-repeat: no-repeat; background-size: contain; background-image: url(" + String(route2background) + ");");
+        canvas.setAttribute("style", "margin: auto; width:" + SCALE * WIDTH + "px; height: " + SCALE * HEIGHT + "px; background-color: black; background-position: center; display:block; background-repeat: no-repeat; background-size: contain; background-image: url(" + String(route2background) + ");");
         var lineWidth = 1;
         reglObj.clear({
             color: [0, 0, 0, 0],
@@ -77,13 +77,21 @@ var App = /** @class */ (function (_super) {
                 //console.log(facet);
                 reglObj(facet)();
             }
+            /*
+            for (let hold of RenderSet.RenderHolds(height, width, offsetX, offsetY)) {
+              //console.log(facet);
+              reglObj(hold)();
+            }
+            */
         });
     };
     App.prototype.render = function () {
-        return (React.createElement("div", null,
+        return (React.createElement("div", { className: "Background" },
             React.createElement("div", { className: "Suggestion", id: "suggestion1" }, "1"),
             React.createElement("div", { className: "Suggestion Position2", id: "suggestion2" }, "2"),
             React.createElement("div", { className: "Suggestion Position3", id: "suggestion3" }, "3"),
+            React.createElement("div", { className: "Novice" }, "Novice Climber"),
+            React.createElement("div", { className: "Expert" }, "Expert Reference"),
             React.createElement("div", { className: "Canvas", id: "reglTest" })));
     };
     return App;
