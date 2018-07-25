@@ -36,6 +36,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import { RenderSet } from './RenderSet';
+import { Suggester } from './suggester';
+import { TTYAgent } from './TTYAgent';
 var expertRecordingRaw = require("./data/joints_route2_climb2.json");
 var noviceRecordingRaw = require("./data/joints_route2_climb4.json");
 var route = require("./data/route2.json");
@@ -118,10 +120,29 @@ var Positioner = /** @class */ (function () {
                 bestDelta = d;
             }
         });
+        console.log('Best delta index - ' + deltas.findIndex(function (d) { return d === bestDelta; }));
         return bestDelta;
     };
     /* Return next frame containing a hold change */
     Positioner.prototype.GetNextHoldChangeFrame = function (startDelta, deltas, expert) {
+        var bestDeltaIndex = deltas.findIndex(function (d) { return startDelta === d; });
+        if (bestDeltaIndex === -1) {
+            return;
+        }
+        var nextBestIndex = -1;
+        for (var i = bestDeltaIndex + 1; i++; i < expert.frames.length) {
+            var d = this.GetDelta(expert.frames[bestDeltaIndex], expert.frames[i]);
+            if (!this.IsMatched(d.leftHand.distance) || !this.IsMatched(d.rightHand.distance) ||
+                !this.IsMatched(d.leftFoot.distance) || !this.IsMatched(d.rightFoot.distance)) {
+                nextBestIndex = i;
+                break;
+            }
+        }
+        if (nextBestIndex !== -1) {
+            console.log('The next best frame index is - ' + nextBestIndex);
+            return deltas[nextBestIndex];
+        }
+        return undefined;
     };
     Positioner.prototype.GetDelta = function (expert, novice) {
         var leftHandDelta = this.LimbDelta(expert.leftHand, novice.leftHand);
@@ -229,7 +250,7 @@ var Positioner = /** @class */ (function () {
     };
     Positioner.prototype.Run = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var firstPos, expertColor, noviceColor, deltas, bestDelta, nextDelta;
+            var firstPos, expertColor, noviceColor, deltas, bestDelta, nextDelta, suggester, ttyAgent;
             return __generator(this, function (_a) {
                 console.log("Loaded expert climber with " + expertRecording.frames.length + " frames");
                 console.log("Loaded novice climber with " + noviceRecording.frames.length + " frames");
@@ -243,6 +264,12 @@ var Positioner = /** @class */ (function () {
                 deltas = this.GetDeltas(expertRecording, firstPos);
                 bestDelta = this.GetBestExpertFrame(deltas, firstPos);
                 nextDelta = this.GetNextHoldChangeFrame(bestDelta, deltas, expertRecording);
+                if (nextDelta) {
+                    suggester = new Suggester();
+                    ttyAgent = new TTYAgent();
+                    ttyAgent.speak(suggester.getSuggestions(bestDelta));
+                    ttyAgent.speak(suggester.getSuggestions(nextDelta));
+                }
                 RenderSet.AddBodyPosition(expertRecording.frames[0], expertColor);
                 return [2 /*return*/];
             });

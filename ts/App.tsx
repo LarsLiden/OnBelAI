@@ -32,7 +32,7 @@ class App extends Component {
    // let height = context.drawingBufferHeight
 
     const canvas = document.querySelector("#reglTest > canvas:first-of-type");
-    canvas.setAttribute("style", `width:${WIDTH}px; height: ${HEIGHT}px; background-position: center; display:block; background-repeat: no-repeat; background-size: contain; background-image: url(${String(route2background)});`);
+    canvas.setAttribute("style", `width:${WIDTH}px; height: ${HEIGHT}px; background-color: black; background-position: center; display:block; background-repeat: no-repeat; background-size: contain; background-image: url(${String(route2background)});`);
 
     var lineWidth = 1
     reglObj.clear({
