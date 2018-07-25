@@ -29,8 +29,8 @@
 
 .Suggestion {
   position: absolute;
-  width: 250px;
-  left: 520px;
+  width: 300px;
+  left: 1200px;
   margin: 10px;
   font-size: 20px;
   color: black;
@@ -42,11 +42,11 @@
 }
 
 .Position2 {
-  top: 75px
+  top: 95px
 }
 
 .Position3 {
-  top: 150px
+  top: 190px
 }
 
 @keyframes App-logo-spin {

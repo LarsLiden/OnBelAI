@@ -515,8 +515,8 @@ export class Positioner {
             RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.expertFrame, expertColor)
             RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.noviceFrame, noviceColor)
 
-            RenderSet.suggestions = suggester.getSuggestions(animationSet[this.curFrame].bestDelta)
-            RenderSet.suggestions.concat(suggester.getSuggestions(animationSet[this.curFrame].nextDelta))
+            //let suggestions = suggester.getSuggestions(animationSet[this.curFrame].bestDelta)
+            RenderSet.suggestions = suggester.getSuggestions(animationSet[this.curFrame].nextDelta)
         }, 250);
     }
 }

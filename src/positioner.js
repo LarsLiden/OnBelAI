@@ -495,8 +495,8 @@ var Positioner = /** @class */ (function () {
                     RenderSet.ClearBodyPositions();
                     RenderSet.AddBodyPosition(animationSet[_this.curFrame].bestDelta.expertFrame, expertColor);
                     RenderSet.AddBodyPosition(animationSet[_this.curFrame].bestDelta.noviceFrame, noviceColor);
-                    RenderSet.suggestions = suggester.getSuggestions(animationSet[_this.curFrame].bestDelta);
-                    RenderSet.suggestions.concat(suggester.getSuggestions(animationSet[_this.curFrame].nextDelta));
+                    //let suggestions = suggester.getSuggestions(animationSet[this.curFrame].bestDelta)
+                    RenderSet.suggestions = suggester.getSuggestions(animationSet[_this.curFrame].nextDelta);
                 }, 250);
                 return [2 /*return*/];
             });
