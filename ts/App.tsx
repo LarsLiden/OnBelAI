@@ -15,8 +15,8 @@ let positioner = new Positioner()
 positioner.Run()
 
 export const SCALE = 0.5
-export const HEIGHT = 1920 * SCALE
-export const WIDTH = 1920 * SCALE
+export const HEIGHT = 1920
+export const WIDTH = 1020 
 
 class App extends Component {
 
@@ -32,7 +32,7 @@ class App extends Component {
    // let height = context.drawingBufferHeight
 
     const canvas = document.querySelector("#reglTest > canvas:first-of-type");
-    canvas.setAttribute("style", `width:${WIDTH}px; height: ${HEIGHT}px; background-color: black; background-position: center; display:block; background-repeat: no-repeat; background-size: contain; background-image: url(${String(route2background)});`);
+    canvas.setAttribute("style", `width:${SCALE * WIDTH}px; height: ${SCALE *HEIGHT}px; background-color: black; background-position: center; display:block; background-repeat: no-repeat; background-size: contain; background-image: url(${String(route2background)});`);
 
     var lineWidth = 1
     reglObj.clear({
