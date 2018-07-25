@@ -29,7 +29,7 @@ export class RenderSet {
         // Left leg, foot to knee to hip
         this.AddLine(bodyPosition.leftFoot.x, bodyPosition.leftFoot.y, bodyPosition.leftKnee.x, bodyPosition.leftKnee.y, color);
         this.AddLine(bodyPosition.leftKnee.x, bodyPosition.leftKnee.y, bodyPosition.leftHip.x, bodyPosition.leftHip.y, color);
-    ``  // Right leg, foot to knee to hip
+        // Right leg, foot to knee to hip
         this.AddLine(bodyPosition.rightFoot.x, bodyPosition.rightFoot.y, bodyPosition.rightKnee.x, bodyPosition.rightKnee.y, color);
         this.AddLine(bodyPosition.rightKnee.x, bodyPosition.rightKnee.y, bodyPosition.rightHip.x, bodyPosition.rightHip.y, color);
         // Connect the shoulders
@@ -47,12 +47,11 @@ export class RenderSet {
     }
 
     public static AddLine(x1: number, y1: number, x2:number, y2: number, color: Color) {
-        if ((x1 * y1 * x2 * y2) == 0) {
-            // One of the coordinates was 0
-            return
+        // Only add the line if no points are at 0
+        if ((x1 * y1 * x2 * y2) > 0) {
+            let line = {start: [x1, y1], end: [x2, y2], color: color}
+            this.lines.push(line)
         }
-        let line = {start: [x1, y1], end: [x2, y2], color: color}
-        this.lines.push(line)
     }
 
     public static RenderFacets(height: number, width: number, color: Color) {
