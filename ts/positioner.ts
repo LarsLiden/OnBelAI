@@ -281,7 +281,7 @@ export class Positioner {
             }
             RenderSet.ClearBodyPositions();
             RenderSet.AddBodyPosition(expertRecording.frames[this.curFrame], expertColor)
-        }, 1000);
+        }, 250);
 
         /* This next from Kiran 
         if (nextDelta) {

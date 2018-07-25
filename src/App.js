@@ -52,9 +52,9 @@ var App = /** @class */ (function (_super) {
             //let width = context.drawingBufferWidth
             //let height = context.drawingBufferHeight
             var width = WIDTH / 2;
-            var height = HEIGHT / 2;
+            var height = -HEIGHT / 2;
             var offsetX = -1;
-            var offsetY = -1;
+            var offsetY = 1;
             // Width and height seem to be screen size
             //console.log(`Context width: ${width}, height: ${height}`)
             for (var _i = 0, _a = RenderSet.RenderFacets(height, width, offsetX, offsetY); _i < _a.length; _i++) {

@@ -279,7 +279,7 @@ var Positioner = /** @class */ (function () {
                     }
                     RenderSet.ClearBodyPositions();
                     RenderSet.AddBodyPosition(expertRecording.frames[_this.curFrame], expertColor);
-                }, 1000);
+                }, 250);
                 return [2 /*return*/];
             });
         });

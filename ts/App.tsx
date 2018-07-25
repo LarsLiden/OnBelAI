@@ -52,9 +52,9 @@ class App extends Component {
       //let width = context.drawingBufferWidth
       //let height = context.drawingBufferHeight
       let width = WIDTH / 2
-      let height = HEIGHT / 2
+      let height = -HEIGHT / 2
       let offsetX = -1
-      let offsetY = -1
+      let offsetY = 1
 
       // Width and height seem to be screen size
       //console.log(`Context width: ${width}, height: ${height}`)
