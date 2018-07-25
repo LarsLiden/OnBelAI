@@ -1,8 +1,23 @@
 import { Delta, LimbDelta } from "./models";
+import { TTYAgent } from "./TTYAgent";
 
 export class Suggester {
 
     public getSuggestions(delta: Delta): string[] {
+
+        if (!delta) {
+            //Testing code below
+            // const retTest = ['Try bending your right arm',
+            //     'Try straightening your left knee',
+            //     'Reach for the next hold using your left hand'];
+            // new TTYAgent().speak(retTest);
+            return undefined;
+        }
+
+        if (!delta || delta.matchCount) {
+            return undefined;
+        }
+
         const ret: string[] = [];
 
         if (delta.matchCount < 3) {
