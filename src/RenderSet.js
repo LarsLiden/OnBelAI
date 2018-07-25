@@ -1,6 +1,9 @@
 var RenderSet = /** @class */ (function () {
     function RenderSet() {
     }
+    RenderSet.ClearBodyPositions = function () {
+        this.lines = [];
+    };
     RenderSet.AddBodyPosition = function (bodyPosition, color) {
         // Line from hand to elbow to shoulder
         this.AddLine(bodyPosition.leftHand.x, bodyPosition.leftHand.y, bodyPosition.leftElbow.x, bodyPosition.leftElbow.y, color);

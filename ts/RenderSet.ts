@@ -20,6 +20,10 @@ export class RenderSet {
 
     static lines : Array<Line> = []
 
+    public static ClearBodyPositions() {
+        this.lines = []
+    }
+    
     public static AddBodyPosition(bodyPosition: BodyPosition, color: Color) {
         // Line from hand to elbow to shoulder
         this.AddLine(bodyPosition.leftHand.x, bodyPosition.leftHand.y, bodyPosition.leftElbow.x, bodyPosition.leftElbow.y, color)

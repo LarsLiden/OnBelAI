@@ -40,6 +40,7 @@ export class Positioner {
     /* If distance is less than this threshold considered to be at some position */
     private POSITION_THRESHOLD = 3;
 
+    private curFrame = 0;
 
     /* If limb is within LIMB_HOLD_THRESHOLD of hold position * radius multiplier
     for LIMB_HOLD_MIN_FRAMES, limb is considered to be on that hold */
@@ -270,7 +271,17 @@ export class Positioner {
         let nextDelta = this.GetNextHoldChangeFrame(bestDelta, deltas, expertRecording)
 
 
-        RenderSet.AddBodyPosition(expertRecording.frames[111], expertColor)
+        RenderSet.AddBodyPosition(expertRecording.frames[this.curFrame], expertColor)
+
+        // repeat with the interval of 2 seconds
+        let timerId = setInterval(() => {
+            this.curFrame++;
+            if (this.curFrame == expertRecording.frames.length) {
+                this.curFrame = 0
+            }
+            RenderSet.ClearBodyPositions();
+            RenderSet.AddBodyPosition(expertRecording.frames[this.curFrame], expertColor)
+        }, 1000);
 
         /* This next from Kiran 
         if (nextDelta) {

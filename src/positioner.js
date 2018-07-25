@@ -64,6 +64,7 @@ var Positioner = /** @class */ (function () {
         this.BEND_THRESHOLD = 0.1;
         /* If distance is less than this threshold considered to be at some position */
         this.POSITION_THRESHOLD = 3;
+        this.curFrame = 0;
         /* If limb is within LIMB_HOLD_THRESHOLD of hold position * radius multiplier
         for LIMB_HOLD_MIN_FRAMES, limb is considered to be on that hold */
         this.HOLD_RADIUS_MULTIPLIER = 2;
@@ -255,7 +256,8 @@ var Positioner = /** @class */ (function () {
     };
     Positioner.prototype.Run = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var firstPos, expertColor, noviceColor, deltas, bestDelta, nextDelta;
+            var firstPos, expertColor, noviceColor, deltas, bestDelta, nextDelta, timerId;
+            var _this = this;
             return __generator(this, function (_a) {
                 console.log("Loaded expert climber with " + expertRecording.frames.length + " frames");
                 console.log("Loaded novice climber with " + noviceRecording.frames.length + " frames");
@@ -269,7 +271,15 @@ var Positioner = /** @class */ (function () {
                 deltas = this.GetDeltas(expertRecording, firstPos);
                 bestDelta = this.GetBestExpertFrame(deltas, firstPos);
                 nextDelta = this.GetNextHoldChangeFrame(bestDelta, deltas, expertRecording);
-                RenderSet.AddBodyPosition(expertRecording.frames[111], expertColor);
+                RenderSet.AddBodyPosition(expertRecording.frames[this.curFrame], expertColor);
+                timerId = setInterval(function () {
+                    _this.curFrame++;
+                    if (_this.curFrame == expertRecording.frames.length) {
+                        _this.curFrame = 0;
+                    }
+                    RenderSet.ClearBodyPositions();
+                    RenderSet.AddBodyPosition(expertRecording.frames[_this.curFrame], expertColor);
+                }, 1000);
                 return [2 /*return*/];
             });
         });
