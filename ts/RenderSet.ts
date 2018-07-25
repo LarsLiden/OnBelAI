@@ -22,9 +22,24 @@ export class RenderSet {
     public static AddBodyPosition(bodyPosition: BodyPosition) {
         // Line from hand to elbow
         this.AddLine(bodyPosition.leftHand.x, bodyPosition.leftHand.y, bodyPosition.leftElbow.x, bodyPosition.leftElbow.y)
-    
+        this.AddLine(bodyPosition.leftElbow.x, bodyPosition.leftElbow.y, bodyPosition.leftShoulder.x, bodyPosition.leftShoulder.y);
+        this.AddLine(bodyPosition.leftShoulder.x, bodyPosition.leftShoulder.y, bodyPosition.rightShoulder.x, bodyPosition.rightShoulder.y);
+        this.AddLine(bodyPosition.rightHand.x, bodyPosition.rightHand.y, bodyPosition.rightElbow.x, bodyPosition.rightElbow.y);
+        this.AddLine(bodyPosition.rightElbow.x, bodyPosition.rightElbow.y, bodyPosition.rightShoulder.x, bodyPosition.rightShoulder.y);
+        this.AddLine(bodyPosition.leftHip.x, bodyPosition.leftHip.y, bodyPosition.leftShoulder.x, bodyPosition.leftShoulder.y);
+        this.AddLine(bodyPosition.rightHip.x, bodyPosition.rightHip.y, bodyPosition.rightShoulder.x, bodyPosition.rightShoulder.y);
+        this.AddLine(bodyPosition.leftHip.x, bodyPosition.leftHip.y, bodyPosition.rightHip.x, bodyPosition.rightHip.y);
+        this.AddLine(bodyPosition.leftFoot.x, bodyPosition.leftFoot.y, bodyPosition.leftKnee.x, bodyPosition.leftKnee.y);
+        this.AddLine(bodyPosition.leftKnee.x, bodyPosition.leftKnee.y, bodyPosition.leftHip.x, bodyPosition.leftHip.y);
+        this.AddLine(bodyPosition.rightFoot.x, bodyPosition.rightFoot.y, bodyPosition.rightKnee.x, bodyPosition.rightKnee.y);
+        this.AddLine(bodyPosition.rightKnee.x, bodyPosition.rightKnee.y, bodyPosition.rightHip.x, bodyPosition.rightHip.y);
+   
     }
     public static AddLine(x1: number, y1: number, x2:number, y2: number) {
+        if ((x1 * y1 * x2 * y2) == 0) {
+            // One of the coordinates was 0
+            return
+        }
         let line = {start: [x1, y1], end: [x2, y2]}
         this.lines.push(line)
     }
