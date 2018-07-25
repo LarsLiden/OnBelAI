@@ -11,7 +11,7 @@ let route = require("./data/route2.json") as Route
 // Little hack to adapt the json format
 let expertRecording : Recording = {frames:Array()}
 for (var f in expertRecordingRaw) {
-    console.log(f)
+    //console.log(f)
     let b : BodyPosition = expertRecordingRaw[f][0]
     expertRecording.frames.push(b)
 }
@@ -19,14 +19,16 @@ for (var f in expertRecordingRaw) {
 // Little hack to adapt the json format
 let noviceRecording : Recording  = {frames:Array()}
 for (var f in noviceRecordingRaw) {
-    console.log(f)
+    //console.log(f)
     let b : BodyPosition = noviceRecordingRaw[f][0]
     noviceRecording.frames.push(b)
 }
 
+/*
 console.log(expertRecording)
 console.log(noviceRecording)
 console.log(route)
+*/
 
 export class Positioner {
 

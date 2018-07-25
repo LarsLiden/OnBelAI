@@ -27,8 +27,8 @@ class App extends Component {
     reglObj.frame((context:any) => {
       // context.tick
       reglObj.clear({
-        color: 0,//[(tick % 100 * 0.01), 0, 0, 1],
-        depth: 1,
+        color: [0,0,0,1],//[(tick % 100 * 0.01), 0, 0, 1],
+        depth: 1
       });
 
       let width = context.drawingBufferWidth
