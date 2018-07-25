@@ -4,9 +4,6 @@
 import { RenderSet } from './RenderSet'
 import { Recording, Delta, BodyPosition, AnimationSet, LimbPosition, LimbDelta, LimbHistory, Route, HoldPosition, Color } from './models';
 import { Suggester } from './suggester';
-import { TTYAgent } from './TTYAgent';
-import { pbkdf2 } from 'crypto';
-import { FORMERR } from 'dns';
 
 let expertRecordingRaw = require(`./data/route2-climb2-experienced-pausing.json`) 
 let noviceRecordingRaw = require(`./data/route2-climb4-novice-pausing.json`) 
@@ -132,7 +129,7 @@ export class Positioner {
         }
 
         let nextBestIndex = -1;
-        for (let i=bestDeltaIndex+1; i++; i<expert.frames.length) {
+        for (let i=bestDeltaIndex+1; i<expert.frames.length; i++) {
             let d = this.GetDelta(expert.frames[bestDeltaIndex], expert.frames[i]);
 
             if (!this.IsMatched(d.leftHand.distance) || !this.IsMatched(d.rightHand.distance) || 
