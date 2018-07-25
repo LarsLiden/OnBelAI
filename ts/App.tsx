@@ -4,9 +4,9 @@ import regl from 'regl';
 import { Component } from 'react';
 import { RenderSet } from './RenderSet'
 import { Positioner } from './positioner'
+import { Color } from './models'
 //import logo from './'  // './logo.svg';
 import './App.css';
-
 
 let positioner = new Positioner()
 
@@ -22,6 +22,7 @@ class App extends Component {
 
     var reglObj = regl()
     var lineWidth = 1
+    var lineColor : Color = {red: 0.8, green: 0.8, blue: 0.8, alpha: 0.8}
 
     reglObj.frame((context:any) => {
       // context.tick
@@ -33,7 +34,7 @@ class App extends Component {
       let width = context.drawingBufferWidth
       let height = context.drawingBufferHeight
 
-      for (let facet of RenderSet.RenderFacets(height, width)) {
+      for (let facet of RenderSet.RenderFacets(height, width, lineColor)) {
         reglObj(facet)()
       }
       /*

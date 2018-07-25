@@ -76,3 +76,10 @@ export interface HoldPosition {
     id?: string
 }
 
+export interface Color {
+    red: number
+    green:number
+    blue: number
+    alpha: number
+}
+

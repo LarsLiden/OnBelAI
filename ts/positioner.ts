@@ -2,7 +2,7 @@
 /* eslint-disable import/first */
 
 import { RenderSet } from './RenderSet'
-import { Recording, Delta, BodyPosition, LimbPosition, LimbDelta, LimbHistory, Route, HoldPosition } from './models';
+import { Recording, Delta, BodyPosition, LimbPosition, LimbDelta, LimbHistory, Route, HoldPosition, Color } from './models';
 
 let expertRecordingRaw = require(`./data/joints_route2_climb2.json`) 
 let noviceRecordingRaw = require(`./data/joints_route2_climb4.json`) 
@@ -226,12 +226,14 @@ export class Positioner {
         this.AnnotateRecording(noviceRecording, route)
 
         let firstPos = noviceRecording.frames[0]
+        let expertColor: Color = {red:0.75, blue: 0.8, green: 0.8, alpha: 0.9}
+        let noviceColor: Color = {red:0.4, blue: 0.9, green: 0.4, alpha: 1.0}
 
         // Calculate all the deltas
         let deltas = this.GetDeltas(expertRecording, firstPos)
         let bestDelta = this.GetBestExpertFrame(deltas, firstPos)
         let nextDelta = this.GetNextHoldChangeFrame(bestDelta, deltas, expertRecording)
 
-        RenderSet.AddBodyPosition(expertRecording.frames[0])
+        RenderSet.AddBodyPosition(expertRecording.frames[0], expertColor)
     }
 }
