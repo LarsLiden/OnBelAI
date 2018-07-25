@@ -1,4 +1,4 @@
-import { BodyPosition, Color } from "./models";
+import { BodyPosition, Color, Route, HoldPosition } from "./models";
 
 
 export interface Point {
@@ -11,6 +11,13 @@ export interface Line {
     color: Color
 }
 
+export interface Hold {
+    center: Point,
+    radius: number,
+    name: String,
+    color: Color
+}
+
 export interface Facet {
     [index: number]: Point
 }
@@ -19,11 +26,21 @@ export class RenderSet {
 
 
     static lines : Array<Line> = []
+    static holds : Array<Hold> = []
 
     public static suggestions: string[] = []
 
     public static ClearBodyPositions() {
         this.lines = []
+    }
+
+    public static ClearHolds() {
+        this.holds = []
+    }
+
+    public static ClearAll() {
+        this.ClearBodyPositions()
+        this.ClearHolds()
     }
     
     public static AddBodyPosition(bodyPosition: BodyPosition, color: Color) {
@@ -65,6 +82,20 @@ export class RenderSet {
             let line = {start: [x1, y1], end: [x2, y2], color: color}
             this.lines.push(line)
         }
+    }
+
+    public static AddHolds(route: Route) {
+        console.log(`Adding holds`)
+        let holdColor : Color = {red:0.8, green: 0.2, blue: 0.8, alpha: 0.8}
+        for (let holdPosition of route.holds) {
+            console.log(`Adding hold at [${holdPosition.x}, ${holdPosition.y}] with radius ${holdPosition.radius}`)
+            this.AddHold(holdPosition.x, holdPosition.y, holdPosition.radius, holdColor)
+        }
+    }
+
+    public static AddHold(centerX : number, centerY: number, radius: number, color: Color) {
+        let hold : Hold = {center: [centerX, centerY], radius: radius, color: color, name: "hold"}
+        this.holds.push(hold)
     }
 
     public static RenderFacets(height: number, width: number, offsetX: number, offsetY: number) {
@@ -114,6 +145,52 @@ export class RenderSet {
                         },
                       
                         count: 3
+                    }
+                }
+            )
+    }
+
+    public static RenderHolds(height: number, width: number, offsetX: number, offsetY: number) {
+        return this.holds.map(h =>
+            {
+                // Scaled to screen
+                
+                let x = h.center[0] / width + offsetX
+                let y = h.center[1] / height + offsetY
+                let r = 0.25 //h.radius * (0.01 / 10)
+                console.log(`Putting hold at ${x}, ${y}, ${r}`)
+
+                return {
+                        // In a draw call, we can pass the shader source code to regl
+                        frag: `
+                        precision highp float;
+                        varying vec4 fragColor;
+                        void main () {
+                          gl_FragColor = fragColor;
+                        }`,
+                      
+                        vert: `
+                        precision mediump float;
+                        attribute vec2 point;
+                        attribute float radius;
+                        attribute vec4 color;
+                        varying vec4 fragColor;
+                        void main () {
+                          gl_Position = vec4(point, 0.0, 1.0);
+                          fragColor = color;
+                          gl_PointSize = radius;
+
+                        }`,
+
+                        attributes: {
+                          point: [x, y],
+                          radius: 1,
+                          color: [h.color.red, h.color.green, h.color.blue, h.color.alpha],
+                        },
+                      
+                        count: 1,
+
+                        primitive: 'points'
                     }
                 }
             )

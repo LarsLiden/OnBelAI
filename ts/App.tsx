@@ -81,6 +81,12 @@ class App extends Component {
         //console.log(facet);
         reglObj(facet)();
       }
+      /*
+      for (let hold of RenderSet.RenderHolds(height, width, offsetX, offsetY)) {
+        //console.log(facet);
+        reglObj(hold)();
+      }
+      */
     });
 
   }

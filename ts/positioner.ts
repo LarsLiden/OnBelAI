@@ -485,6 +485,8 @@ export class Positioner {
         this.AnnotateRecording(expertRecording, route)
         this.AnnotateRecording(noviceRecording, route)
 
+        RenderSet.AddHolds(route)
+
         let firstPos = noviceRecording.frames[0]
         let expertColor: Color = {red:0.75, blue: 0.8, green: 0.8, alpha: 0.9}
         let noviceColor: Color = {red:0.4, blue: 0.9, green: 0.4, alpha: 1.0}
