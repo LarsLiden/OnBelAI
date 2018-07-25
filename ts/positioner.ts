@@ -1,11 +1,15 @@
 /* eslint-disable */
 /* eslint-disable import/first */
-let expertRecording = require(`./data/Route1Expert.json`)
-let noviceRecording = require(`./data/Route1Novice1.json`)
-let route2 = require("./data/route2.json")
-import { RenderSet } from './RenderSet'
-import { Recording, Delta, BodyPosition, LimbPosition, LimbDelta, Route } from './models';
 
+import { RenderSet } from './RenderSet'
+import { Recording, Delta, BodyPosition, LimbPosition, LimbDelta, LimbHistory, Route, HoldPosition } from './models';
+
+let expertRecording = require(`./data/Route1Expert.json`) as Recording
+let noviceRecording = require(`./data/Route1Novice1.json`) as Recording
+let route = require("./data/route2.json") as Route
+
+console.log(expertRecording)
+console.log(route)
 
 export class Positioner {
 
@@ -111,6 +115,7 @@ export class Positioner {
     }
 
     public LimbOnHold(limb: LimbPosition, routeMap: Route): boolean {
+        console.log(`Checkling limb position against ${routeMap.holds.length} holds in route`)
         for (var hold of routeMap.holds) {
             let deltaX = limb.x - hold.x
             let deltaY = limb.y - hold.y
@@ -129,32 +134,53 @@ export class Positioner {
     public AnnotateRecording (inputRecording: Recording, routeMap: Route) {
         const maxHistory:number = 30
 
-        var positionHistory: BodyPosition[]
+        var positionHistory: BodyPosition[] = []
         // For each frame, we'll look back in history and figure out how far it's moved in the past maxHistory frames
         for (var frame of inputRecording.frames) {
             // First we'll check which (if any) limbs are on holds in this frame.
             // No need to check hips and shoulders and stuff.
+            console.log(`Annotating frame ${frame.frameNumber} of ${inputRecording.frames.length}`)
             frame.leftHand.onHold = this.LimbOnHold(frame.leftHand, routeMap)
             frame.rightHand.onHold = this.LimbOnHold(frame.rightHand, routeMap)
             frame.leftFoot.onHold = this.LimbOnHold(frame.leftFoot, routeMap)
             frame.rightFoot.onHold = this.LimbOnHold(frame.rightFoot, routeMap)  
-            let status : String = "Frame {$frame.frameNumber} | onHolds: LH {$frame.leftHand.onHold}, RH: {$frame.rightHand.onHold}, LF {$frame.leftFoot.onHold}, RF: {$frame.rightFoot.onHold}"
-            console.log(status)     
+            console.log(`Frame ${frame.frameNumber} | onHolds: LH ${frame.leftHand.onHold}, RH: ${frame.rightHand.onHold}, LF ${frame.leftFoot.onHold}, RF: ${frame.rightFoot.onHold}`)    
             // We'll store the distance each limb moved for each frame count between 0 and maxHistory
             // so later on we can say leftHand.history.distanceMoved[1] or leftHand.history.distanceMoved[10]
             // for 1 or 10 frames
+            //
+            // Start by adding this frame so deltas with index 0 are also this frame
+            positionHistory.unshift(frame)
+            // If we've got more history than we can use, remove the oldest one
+            if (positionHistory.length > maxHistory) {
+                positionHistory.pop()
+            }          
+            // Make sure our arrays actually exist because they don't when the file is first loaded
+            // This is probably a terrible pattern 
+            let zeroHistory : LimbHistory = {distanceMoved:[0]}
+            frame.leftHand.history = zeroHistory
+            frame.leftHand.history = zeroHistory
+            frame.leftElbow.history = zeroHistory
+            frame.leftShoulder.history = zeroHistory 
+            frame.rightHand.history = zeroHistory
+            frame.rightElbow.history = zeroHistory
+            frame.rightShoulder.history = zeroHistory
+            frame.leftFoot.history = zeroHistory
+            frame.leftKnee.history = zeroHistory
+            frame.rightFoot.history = zeroHistory
+            frame.rightKnee.history = zeroHistory
+            frame.leftHip.history = zeroHistory
+            frame.rightHip.history = zeroHistory
+
             for (var i = 0; i<maxHistory; i++) {
                 // Determine what frame we'll use to compare
                 var deltaFrame : BodyPosition
                 if (positionHistory.length > i) {
                     deltaFrame = positionHistory[i]
-                } else if (positionHistory.length > 0) {
+                } else {
                     // We don't have the full buffer yet, so use the oldest
                     deltaFrame = positionHistory[positionHistory.length - 1]
-                } else {
-                    // Yes, for frame 0 we will compute the delta from itself, which will be 0
-                    deltaFrame = frame
-                }
+                } 
                 frame.leftHand.history.distanceMoved.unshift(this.LimbDistance(frame.leftHand,deltaFrame.leftHand))
                 frame.leftElbow.history.distanceMoved.unshift(this.LimbDistance(frame.leftElbow,deltaFrame.leftElbow))
                 frame.leftShoulder.history.distanceMoved.unshift(this.LimbDistance(frame.leftShoulder,deltaFrame.leftShoulder))
@@ -168,19 +194,17 @@ export class Positioner {
                 frame.leftHip.history.distanceMoved.unshift(this.LimbDistance(frame.leftHip,deltaFrame.leftHip))
                 frame.rightHip.history.distanceMoved.unshift(this.LimbDistance(frame.rightHip,deltaFrame.rightHip))
             }
-            positionHistory.unshift(frame)
-            // If we've got more history than we can use, remove the oldest one
-            if (positionHistory.length > maxHistory) {
-                positionHistory.pop()
-            }
        }
     }
 
     public async Run() {
+        console.log(`Loaded expert climber with ${expertRecording.frames.length} frames`)
+        console.log(`Loaded novice climber with ${noviceRecording.frames.length} frames`)
+        console.log(`Loaded route with ${route.holds.length} holds`)      
 
         // Add movement history and frames where limbs are on holds to each of the recordings
-        this.AnnotateRecording(expertRecording, route2)
-        this.AnnotateRecording(noviceRecording, route2)
+        this.AnnotateRecording(expertRecording, route)
+        this.AnnotateRecording(noviceRecording, route)
 
         let firstPos = noviceRecording.frames[0]
 
