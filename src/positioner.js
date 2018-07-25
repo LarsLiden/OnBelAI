@@ -258,7 +258,7 @@ var Positioner = /** @class */ (function () {
     };
     Positioner.prototype.Run = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var firstPos, expertColor, noviceColor, deltas, bestDelta, nextDelta, timerId;
+            var firstPos, expertColor, noviceColor, animationSet, index, deltas, bestDelta, nextDelta, timerId;
             var _this = this;
             return __generator(this, function (_a) {
                 console.log("Loaded expert climber with " + expertRecording.frames.length + " frames");
@@ -270,25 +270,27 @@ var Positioner = /** @class */ (function () {
                 firstPos = noviceRecording.frames[0];
                 expertColor = { red: 0.75, blue: 0.8, green: 0.8, alpha: 0.9 };
                 noviceColor = { red: 0.4, blue: 0.9, green: 0.4, alpha: 1.0 };
-                deltas = this.GetDeltas(expertRecording, firstPos);
-                bestDelta = this.GetBestExpertFrame(deltas, firstPos);
-                nextDelta = this.GetNextHoldChangeFrame(bestDelta, deltas, expertRecording);
-                RenderSet.AddBodyPosition(deltas[this.curFrame].expertFrame, expertColor);
-                RenderSet.AddBodyPosition(deltas[this.curFrame].noviceFrame, noviceColor);
+                animationSet = [];
+                for (index in noviceRecording.frames) {
+                    deltas = this.GetDeltas(expertRecording, noviceRecording.frames[index]);
+                    bestDelta = this.GetBestExpertFrame(deltas, noviceRecording.frames[index]);
+                    nextDelta = this.GetNextHoldChangeFrame(bestDelta, deltas, expertRecording);
+                    animationSet.push({
+                        bestDelta: bestDelta,
+                        nextDelta: nextDelta
+                    });
+                }
+                RenderSet.AddBodyPosition(animationSet[this.curFrame].nextDelta.expertFrame, expertColor);
+                RenderSet.AddBodyPosition(animationSet[this.curFrame].nextDelta.noviceFrame, noviceColor);
                 timerId = setInterval(function () {
                     _this.curFrame++;
                     if (_this.curFrame == expertRecording.frames.length) {
                         _this.curFrame = 0;
                     }
                     RenderSet.ClearBodyPositions();
-<<<<<<< HEAD
-                    RenderSet.AddBodyPosition(expertRecording.frames[_this.curFrame], expertColor);
+                    RenderSet.AddBodyPosition(animationSet[_this.curFrame].nextDelta.expertFrame, expertColor);
+                    RenderSet.AddBodyPosition(animationSet[_this.curFrame].nextDelta.noviceFrame, noviceColor);
                 }, 250);
-=======
-                    RenderSet.AddBodyPosition(deltas[_this.curFrame].expertFrame, expertColor);
-                    RenderSet.AddBodyPosition(deltas[_this.curFrame].noviceFrame, noviceColor);
-                }, 1000);
->>>>>>> d801b4842493e0c5d42d9109df787e1ca44ebf6f
                 return [2 /*return*/];
             });
         });

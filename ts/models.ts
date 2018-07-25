@@ -83,3 +83,8 @@ export interface Color {
     alpha: number
 }
 
+export interface AnimationSet {
+    bestDelta: Delta
+    nextDelta: Delta
+}
+

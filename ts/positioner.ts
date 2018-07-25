@@ -2,7 +2,7 @@
 /* eslint-disable import/first */
 
 import { RenderSet } from './RenderSet'
-import { Recording, Delta, BodyPosition, LimbPosition, LimbDelta, LimbHistory, Route, HoldPosition, Color } from './models';
+import { Recording, Delta, BodyPosition, AnimationSet, LimbPosition, LimbDelta, LimbHistory, Route, HoldPosition, Color } from './models';
 import { Suggester } from './suggester';
 import { TTYAgent } from './TTYAgent';
 
@@ -267,14 +267,21 @@ export class Positioner {
         let expertColor: Color = {red:0.75, blue: 0.8, green: 0.8, alpha: 0.9}
         let noviceColor: Color = {red:0.4, blue: 0.9, green: 0.4, alpha: 1.0}
 
-        // Calculate all the deltas
-        let deltas = this.GetDeltas(expertRecording, firstPos)
-        let bestDelta = this.GetBestExpertFrame(deltas, firstPos)
-        let nextDelta = this.GetNextHoldChangeFrame(bestDelta, deltas, expertRecording)
+        let animationSet: AnimationSet[] = []
+        for (let index in noviceRecording.frames) {
+            // Calculate all the deltas
+            let deltas = this.GetDeltas(expertRecording, noviceRecording.frames[index])
+            let bestDelta = this.GetBestExpertFrame(deltas, noviceRecording.frames[index])
+            let nextDelta = this.GetNextHoldChangeFrame(bestDelta, deltas, expertRecording)
+            animationSet.push({
+                bestDelta,
+                nextDelta
+            } as AnimationSet) 
+        }
 
 
-        RenderSet.AddBodyPosition(deltas[this.curFrame].expertFrame, expertColor)
-        RenderSet.AddBodyPosition(deltas[this.curFrame].noviceFrame, noviceColor)
+        RenderSet.AddBodyPosition(animationSet[this.curFrame].nextDelta.expertFrame, expertColor)
+        RenderSet.AddBodyPosition(animationSet[this.curFrame].nextDelta.noviceFrame, noviceColor)
 
         // repeat with the interval of 2 seconds
         let timerId = setInterval(() => {
@@ -283,8 +290,8 @@ export class Positioner {
                 this.curFrame = 0
             }
             RenderSet.ClearBodyPositions();
-            RenderSet.AddBodyPosition(deltas[this.curFrame].expertFrame, expertColor)
-            RenderSet.AddBodyPosition(deltas[this.curFrame].noviceFrame, noviceColor)
+            RenderSet.AddBodyPosition(animationSet[this.curFrame].nextDelta.expertFrame, expertColor)
+            RenderSet.AddBodyPosition(animationSet[this.curFrame].nextDelta.noviceFrame, noviceColor)
          }, 250);
 
         /* This next from Kiran 
