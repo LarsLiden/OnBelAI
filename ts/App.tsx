@@ -6,10 +6,11 @@ import { RenderSet } from './RenderSet'
 import { Positioner } from './positioner'
 import { Color } from './models'
 //import logo from './'  // './logo.svg';
+// Background image
+let route2background = require('./data/route2-background.png');
 import './App.css';
 
 let positioner = new Positioner()
-
 
 positioner.Run()
 
@@ -24,12 +25,11 @@ class App extends Component {
       container: rootDiv,
     })
     const canvas = document.querySelector("#reglTest > canvas:first-of-type");
-    canvas.setAttribute("style", "display:block; width:1080px; height: 1920px;");
+    canvas.setAttribute("style", `display:block; width:1080px; height: 1920px; background-image: url(${String(route2background)});`);
 
     var lineWidth = 1
-    var lineColor : Color = {red: 0.8, green: 0.8, blue: 0.8, alpha: 0.8}
     reglObj.clear({
-      color: [0,0,0,1],//[(tick % 100 * 0.01), 0, 0, 1],
+      color: [0,0,0,0],//[(tick % 100 * 0.01), 0, 0, 1],
       depth: 1
     });
 
@@ -37,7 +37,7 @@ class App extends Component {
       // context.tick
       
       reglObj.clear({
-        color: [0,0,0,1],//[(tick % 100 * 0.01), 0, 0, 1],
+        color: [0,0,0,0],//[(tick % 100 * 0.01), 0, 0, 1],
         depth: 1
       });
       
@@ -52,10 +52,9 @@ class App extends Component {
       // Width and height seem to be screen size
       //console.log(`Context width: ${width}, height: ${height}`)
 
-      for (let facet of RenderSet.RenderFacets(height, width, offsetX, offsetY, lineColor)) {
+      for (let facet of RenderSet.RenderFacets(height, width, offsetX, offsetY)) {
         //console.log(facet);
         reglObj(facet)();
-
       }
       /*
       reglObj({
