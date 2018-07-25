@@ -134,7 +134,7 @@ export class Positioner {
     }
 
     public LimbOnHold(limb: LimbPosition, routeMap: Route): boolean {
-        console.log(`Checkling limb position against ${routeMap.holds.length} holds in route`)
+        //console.log(`Checkling limb position against ${routeMap.holds.length} holds in route`)
         for (var hold of routeMap.holds) {
             let deltaX = limb.x - hold.x
             let deltaY = limb.y - hold.y
@@ -157,15 +157,21 @@ export class Positioner {
 
         var positionHistory: BodyPosition[] = []
         // For each frame, we'll look back in history and figure out how far it's moved in the past maxHistory frames
+        let f:number = 0
         for (var frame of inputRecording.frames) {
             // First we'll check which (if any) limbs are on holds in this frame.
             // No need to check hips and shoulders and stuff.
-            console.log(`Annotating frame ${frame.frameNumber} of ${inputRecording.frames.length}`)
+            //console.log(`Annotating frame ${frame.frameNumber} of ${inputRecording.frames.length}`)
+            console.log(`Annotating frame ${f} of ${inputRecording.frames.length}`)
             frame.leftHand.onHold = this.LimbOnHold(frame.leftHand, routeMap)
             frame.rightHand.onHold = this.LimbOnHold(frame.rightHand, routeMap)
             frame.leftFoot.onHold = this.LimbOnHold(frame.leftFoot, routeMap)
             frame.rightFoot.onHold = this.LimbOnHold(frame.rightFoot, routeMap)  
-            console.log(`Frame ${frame.frameNumber} | onHolds: LH ${frame.leftHand.onHold}, RH: ${frame.rightHand.onHold}, LF ${frame.leftFoot.onHold}, RF: ${frame.rightFoot.onHold}`)    
+            let numLimbsOnHolds : number = (frame.leftHand.onHold ? 1: 0) + (frame.rightHand.onHold ? 1: 0) 
+                + (frame.leftFoot.onHold ? 1: 0) + (frame.rightFoot.onHold ? 1: 0)
+            if (numLimbsOnHolds > 0) {
+                console.log(`Frame ${f} | ${numLimbsOnHolds} limbs on holds: LH ${frame.leftHand.onHold}, RH: ${frame.rightHand.onHold}, LF ${frame.leftFoot.onHold}, RF: ${frame.rightFoot.onHold}`)    
+            }
             // We'll store the distance each limb moved for each frame count between 0 and maxHistory
             // so later on we can say leftHand.history.distanceMoved[1] or leftHand.history.distanceMoved[10]
             // for 1 or 10 frames
@@ -215,6 +221,7 @@ export class Positioner {
                 frame.leftHip.history.distanceMoved.unshift(this.LimbDistance(frame.leftHip,deltaFrame.leftHip))
                 frame.rightHip.history.distanceMoved.unshift(this.LimbDistance(frame.rightHip,deltaFrame.rightHip))
             }
+        f = f+1
        }
     }
 
@@ -236,6 +243,6 @@ export class Positioner {
         let bestDelta = this.GetBestExpertFrame(deltas, firstPos)
         let nextDelta = this.GetNextHoldChangeFrame(bestDelta, deltas, expertRecording)
 
-        RenderSet.AddBodyPosition(expertRecording.frames[0], expertColor)
+        RenderSet.AddBodyPosition(expertRecording.frames[111], expertColor)
     }
 }
