@@ -14,9 +14,9 @@ let positioner = new Positioner()
 
 positioner.Run()
 
-const SCALE = 0.5
-const HEIGHT = 1920 * SCALE
-const WIDTH = 1920 * SCALE
+export const SCALE = 0.5
+export const HEIGHT = 1920 * SCALE
+export const WIDTH = 1920 * SCALE
 
 class App extends Component {
 
