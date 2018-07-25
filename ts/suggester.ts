@@ -14,15 +14,19 @@ export class Suggester {
             return [];
         }
 
-        if (!delta || delta.matchCount) {
-            return [];
-        }
-
         const ret: string[] = [];
 
-        if (delta.matchCount < 3) {
+        if (delta.matchCount === 3) {
             // novice and expert frames are not matched
             // Suggest moves to match at least 3 contact points.
+
+            // HIPS
+            if (delta.leftHip.deltaY > 0 && delta.rightHip.deltaY > 0) {
+                ret.push('Try raising your hips')
+            }
+            else if (delta.leftHip.deltaY > 0 && delta.rightHip.deltaY > 0) {
+                ret.push('Try lowering your hips')
+            }
 
             // toes
             if (!delta.leftFoot.matched) {
@@ -38,7 +42,7 @@ export class Suggester {
                 }
             }
     
-            if (!delta.rightFoot.matched) {
+            else if (!delta.rightFoot.matched) {
                 // Move up/down
                 if (this.isInFirstQuadrant(delta.rightFoot)) {
                     ret.push('Reach right and up with your right foot');
@@ -52,7 +56,7 @@ export class Suggester {
             }
 
             // hands
-            if (!delta.leftHand.matched) {
+            else if (!delta.leftHand.matched) {
                 if (this.isInFirstQuadrant(delta.leftHand)) {
                     ret.push('Reach right and up with your left hand');
                 } else if (this.isInSecondQuadrant(delta.leftHand)) {
@@ -64,7 +68,7 @@ export class Suggester {
                 }
             }
 
-            if (!delta.rightHand.matched) {
+            else if (!delta.rightHand.matched) {
                 if (this.isInFirstQuadrant(delta.rightHand)) {
                     ret.push('Reach right and up with your right hand');
                 } else if (this.isInSecondQuadrant(delta.rightHand)) {
@@ -76,8 +80,6 @@ export class Suggester {
                 }
             }
         } else {
-            // Novice and expert frames match on at least 3 contact points.
-            // Suggestions related to hips, arms and legs.
 
             //hips and arms
             if (this.isInFirstQuadrant(delta.rightHip)) {
@@ -154,6 +156,7 @@ export class Suggester {
                 }
             }
         }
+
 
         if (ret.length == 0) {
             ret.push("None")

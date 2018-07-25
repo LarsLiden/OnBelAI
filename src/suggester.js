@@ -10,13 +10,17 @@ var Suggester = /** @class */ (function () {
             // new TTYAgent().speak(retTest);
             return [];
         }
-        if (!delta || delta.matchCount) {
-            return [];
-        }
         var ret = [];
-        if (delta.matchCount < 3) {
+        if (delta.matchCount === 3) {
             // novice and expert frames are not matched
             // Suggest moves to match at least 3 contact points.
+            // HIPS
+            if (delta.leftHip.deltaY > 0 && delta.rightHip.deltaY > 0) {
+                ret.push('Try raising your hips');
+            }
+            else if (delta.leftHip.deltaY > 0 && delta.rightHip.deltaY > 0) {
+                ret.push('Try lowering your hips');
+            }
             // toes
             if (!delta.leftFoot.matched) {
                 // Move up/down
@@ -33,7 +37,7 @@ var Suggester = /** @class */ (function () {
                     ret.push('Reach right and down with your left foot');
                 }
             }
-            if (!delta.rightFoot.matched) {
+            else if (!delta.rightFoot.matched) {
                 // Move up/down
                 if (this.isInFirstQuadrant(delta.rightFoot)) {
                     ret.push('Reach right and up with your right foot');
@@ -49,7 +53,7 @@ var Suggester = /** @class */ (function () {
                 }
             }
             // hands
-            if (!delta.leftHand.matched) {
+            else if (!delta.leftHand.matched) {
                 if (this.isInFirstQuadrant(delta.leftHand)) {
                     ret.push('Reach right and up with your left hand');
                 }
@@ -63,7 +67,7 @@ var Suggester = /** @class */ (function () {
                     ret.push('Reach right and down with your left hand');
                 }
             }
-            if (!delta.rightHand.matched) {
+            else if (!delta.rightHand.matched) {
                 if (this.isInFirstQuadrant(delta.rightHand)) {
                     ret.push('Reach right and up with your right hand');
                 }
@@ -79,8 +83,6 @@ var Suggester = /** @class */ (function () {
             }
         }
         else {
-            // Novice and expert frames match on at least 3 contact points.
-            // Suggestions related to hips, arms and legs.
             //hips and arms
             if (this.isInFirstQuadrant(delta.rightHip)) {
                 // move right and up

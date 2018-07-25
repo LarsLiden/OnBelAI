@@ -63,8 +63,8 @@ var Positioner = /** @class */ (function () {
     function Positioner() {
         /* If less than this threshold, considered to be straight */
         this.BEND_THRESHOLD = 0.1;
-        /* If distance is less than this threshold considered to be at some position */
-        this.POSITION_THRESHOLD = 3;
+        /* If distance is less than this threshold considered to be at same position */
+        this.POSITION_THRESHOLD = 100;
         this.curFrame = 0;
         /* If limb is within LIMB_HOLD_THRESHOLD of hold position * radius multiplier
         for LIMB_HOLD_MIN_FRAMES, limb is considered to be on that hold */
