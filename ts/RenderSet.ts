@@ -7,7 +7,8 @@ export interface Point {
 
 export interface Line {
     start: Point,
-    end: Point
+    end: Point,
+    color: Color
 }
 
 export interface Facet {
@@ -54,7 +55,7 @@ export class RenderSet {
         }
     }
 
-    public static RenderFacets(height: number, width: number, offsetX: number, offsetY: number, color: Color) {
+    public static RenderFacets(height: number, width: number, offsetX: number, offsetY: number) {
         return this.lines.map(l =>
             {
                 // Scaled to screen
@@ -97,7 +98,7 @@ export class RenderSet {
                         },
                       
                         uniforms: {
-                          color: [color.red, color.green, color.blue, color.alpha]
+                          color: [l.color.red, l.color.green, l.color.blue, l.color.alpha]
                         },
                       
                         count: 3
