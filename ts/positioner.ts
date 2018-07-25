@@ -139,9 +139,11 @@ export class Positioner {
             let distance = Math.sqrt((deltaX * deltaX) + (deltaY * deltaY))
             if (distance <= hold.radius + this.LIMB_HOLD_THRESHOLD) {
                 // Now check if the limb has moved too much
+                /* Actually this doesn't work because we call LimbOnHold before building history 
                 if (limb.history.distanceMoved[1] > this.LIMB_HOLD_MAX_FRAME_MOVEMENT) {
                     return false;
                 }
+                */
                 return true;
             }
         }
