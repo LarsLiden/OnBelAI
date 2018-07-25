@@ -97,6 +97,8 @@ class App extends Component {
         <div className="Suggestion" id="suggestion1">1</div>
         <div className="Suggestion Position2" id="suggestion2">2</div>
         <div className="Suggestion Position3" id="suggestion3">3</div>
+        <div className="Novice">Novice Climber</div>
+        <div className="Expert">Expert Reference</div>
         <div className="Canvas" id="reglTest"></div>
       </div>
     )

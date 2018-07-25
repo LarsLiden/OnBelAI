@@ -90,6 +90,8 @@ var App = /** @class */ (function (_super) {
             React.createElement("div", { className: "Suggestion", id: "suggestion1" }, "1"),
             React.createElement("div", { className: "Suggestion Position2", id: "suggestion2" }, "2"),
             React.createElement("div", { className: "Suggestion Position3", id: "suggestion3" }, "3"),
+            React.createElement("div", { className: "Novice" }, "Novice Climber"),
+            React.createElement("div", { className: "Expert" }, "Expert Reference"),
             React.createElement("div", { className: "Canvas", id: "reglTest" })));
     };
     return App;

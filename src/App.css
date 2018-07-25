@@ -55,6 +55,37 @@
   top: 290px
 }
 
+
+.Novice {
+  position: absolute;
+  width: 300px;
+  left: 100px;
+  margin: 10px;
+  font-size: 20px;
+  color: black;
+  background-color: white;
+  z-index: 100;
+  border-radius: 25px;
+  background: rgb(127,127,255);
+  padding: 20px;
+  top: 100px;
+}
+
+.Expert {
+  position: absolute;
+  width: 300px;
+  left: 100px;
+  margin: 10px;
+  font-size: 20px;
+  color: black;
+  background-color: white;
+  z-index: 100;
+  border-radius: 25px;
+  background: rgb(255,127,127);
+  padding: 20px;
+  top: 290px
+}
+
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }

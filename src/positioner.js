@@ -474,8 +474,8 @@ var Positioner = /** @class */ (function () {
                 this.AnnotateRecording(noviceRecording, route);
                 RenderSet.AddHolds(route);
                 firstPos = noviceRecording.frames[0];
-                expertColor = { red: 0.7, blue: 0.7, green: 0.7, alpha: 0.9 };
-                noviceColor = { red: 0.4, blue: 0.9, green: 0.4, alpha: 1.0 };
+                expertColor = { red: 1, blue: 0.5, green: 0.5, alpha: 0.5 };
+                noviceColor = { red: 0.5, blue: 1, green: 0.5, alpha: 1.0 };
                 animationSet = [];
                 for (index in noviceRecording.frames) {
                     deltas = this.GetDeltas(expertRecording, noviceRecording.frames[index]);
@@ -486,16 +486,16 @@ var Positioner = /** @class */ (function () {
                         nextDelta: nextDelta
                     });
                 }
-                RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.noviceFrame, noviceColor);
                 RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.expertFrame, expertColor);
+                RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.noviceFrame, noviceColor);
                 timerId = setInterval(function () {
                     _this.curFrame++;
                     if (_this.curFrame == animationSet.length) {
                         _this.curFrame = 0;
                     }
                     RenderSet.ClearBodyPositions();
-                    RenderSet.AddBodyPosition(animationSet[_this.curFrame].bestDelta.expertFrame, expertColor);
                     RenderSet.AddBodyPosition(animationSet[_this.curFrame].bestDelta.noviceFrame, noviceColor);
+                    RenderSet.AddBodyPosition(animationSet[_this.curFrame].bestDelta.expertFrame, expertColor);
                     //let suggestions = suggester.getSuggestions(animationSet[this.curFrame].bestDelta)
                     RenderSet.suggestions = suggester.getSuggestions(animationSet[_this.curFrame].nextDelta);
                 }, 250);
