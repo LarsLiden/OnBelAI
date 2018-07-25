@@ -47,9 +47,10 @@ var RenderSet = /** @class */ (function () {
             let x2 = l.end[0]
             let y2 = l.end[1]
             */
+            var lineWidth = 5 / width;
             var p3 = [x1, y1];
-            var p2 = [x2 - 0.2, y2 + 0.2];
-            var p1 = [x2 + 0.2, y2 - 0.2];
+            var p2 = [x2 - lineWidth, y2 + lineWidth];
+            var p1 = [x2 + lineWidth, y2 - lineWidth];
             var facet = [[p1[0], p1[1]], [p2[0], p2[1]], [p3[0], p3[1]]];
             return {
                 // In a draw call, we can pass the shader source code to regl

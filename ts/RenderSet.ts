@@ -71,10 +71,10 @@ export class RenderSet {
                let x2 = l.end[0]
                let y2 = l.end[1]  
                */            
-
+                let lineWidth = 5/width
                 let p3 = [x1, y1] as Point
-                let p2 = [x2-0.2, y2+0.2] as Point
-                let p1 = [x2+0.2, y2-0.2] as Point
+                let p2 = [x2-lineWidth, y2+lineWidth] as Point
+                let p1 = [x2+lineWidth, y2-lineWidth] as Point
                 let facet = [[p1[0], p1[1]],[p2[0], p2[1]],[p3[0], p3[1]]]
 
                 return {

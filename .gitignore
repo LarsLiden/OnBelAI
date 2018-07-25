@@ -69,3 +69,5 @@ yarn-error.log*
 .vscode/chrome/chrome_shutdown_ms.txt
 .vscode/chrome/BrowserMetrics/BrowserMetrics-5B5796A6-2FEC.pma
 .vscode/chrome/BrowserMetrics/BrowserMetrics-5B577165-7700.pma
+src/App.js
+src/App.js.map
