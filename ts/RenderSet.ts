@@ -43,18 +43,18 @@ export class RenderSet {
         this.ClearHolds()
     }
 
-    public static AddBodyPosition(bodyPosition: BodyPosition, color: Color) {
+    public static AddBodyPosition(bodyPosition: BodyPosition, color: Color, onHoldColor: Color) {
         // Line from hand to elbow to shoulder
-        this.AddLine(bodyPosition.leftElbow.x, bodyPosition.leftElbow.y, bodyPosition.leftHand.x, bodyPosition.leftHand.y, color)
+        this.AddLine(bodyPosition.leftElbow.x, bodyPosition.leftElbow.y, bodyPosition.leftHand.x, bodyPosition.leftHand.y, bodyPosition.leftHand.onHold ? onHoldColor : color)
         this.AddLine(bodyPosition.leftElbow.x, bodyPosition.leftElbow.y, bodyPosition.leftShoulder.x, bodyPosition.leftShoulder.y, color);
         // Right hand to elbow to shoulder
-        this.AddLine(bodyPosition.rightElbow.x, bodyPosition.rightElbow.y, bodyPosition.rightHand.x, bodyPosition.rightHand.y, color);
+        this.AddLine(bodyPosition.rightElbow.x, bodyPosition.rightElbow.y, bodyPosition.rightHand.x, bodyPosition.rightHand.y, bodyPosition.rightHand.onHold ? onHoldColor : color);
         this.AddLine(bodyPosition.rightElbow.x, bodyPosition.rightElbow.y, bodyPosition.rightShoulder.x, bodyPosition.rightShoulder.y, color);
         // Left leg, foot to knee to hip
-        this.AddLine(bodyPosition.leftKnee.x, bodyPosition.leftKnee.y, bodyPosition.leftFoot.x, bodyPosition.leftFoot.y, color);
+        this.AddLine(bodyPosition.leftKnee.x, bodyPosition.leftKnee.y, bodyPosition.leftFoot.x, bodyPosition.leftFoot.y, bodyPosition.leftFoot.onHold ? onHoldColor : color);
         this.AddLine(bodyPosition.leftKnee.x, bodyPosition.leftKnee.y, bodyPosition.leftHip.x, bodyPosition.leftHip.y, color);
         // Right leg, foot to knee to hip
-        this.AddLine(bodyPosition.rightKnee.x, bodyPosition.rightKnee.y, bodyPosition.rightFoot.x, bodyPosition.rightFoot.y, color);
+        this.AddLine(bodyPosition.rightKnee.x, bodyPosition.rightKnee.y, bodyPosition.rightFoot.x, bodyPosition.rightFoot.y, bodyPosition.rightFoot.onHold ? onHoldColor : color);
         this.AddLine(bodyPosition.rightKnee.x, bodyPosition.rightKnee.y, bodyPosition.rightHip.x, bodyPosition.rightHip.y, color);
         // Connect the shoulders
         if ((bodyPosition.leftShoulder.x * bodyPosition.leftShoulder.y * bodyPosition.rightShoulder.x * bodyPosition.rightShoulder.y) > 0) {
@@ -85,8 +85,11 @@ export class RenderSet {
     }
 
     public static AddHolds(route: Route) {
+        // Clear holds first
+        this.holds = []
+
         console.log(`Adding holds`)
-        let holdColor: Color = { red: 0.8, green: 0.2, blue: 0.8, alpha: 0.8 }
+        let holdColor: Color = { red: 0.8, green: 0.8, blue: 1.0, alpha: 0.6 }
         let onHoldColor: Color = { red: 1.0, green: 0.0, blue: 0.0, alpha: 0.8 }
         for (let holdPosition of route.holds) {
             console.log(`Adding hold at [${holdPosition.x}, ${holdPosition.y}] with radius ${holdPosition.radius}`)
@@ -212,7 +215,7 @@ export class RenderSet {
                 },
 
                 uniforms: {
-                    color: [0.5, 0.7, 0.7, 0.3],
+                    color: [h.color.red, h.color.green, h.color.blue, h.color.alpha],
                     pointWidth: 8.0
                 },
 

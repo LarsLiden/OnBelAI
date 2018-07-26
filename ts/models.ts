@@ -1,7 +1,7 @@
 export interface LimbPosition {
     x: number
     y: number
-    onHold?: boolean
+    onHold?: HoldPosition
     occluded?: boolean
     history?: LimbHistory
 }
@@ -41,7 +41,7 @@ export interface LimbDelta {
     matched: boolean
 
     /* Is the limb on a hold */
-    onHold: boolean
+    onHold: HoldPosition
 
     /* Is the novice  limb occluded */
     occluded?: boolean

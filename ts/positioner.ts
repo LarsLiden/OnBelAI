@@ -50,7 +50,7 @@ export class Positioner {
     /* If limb is within LIMB_HOLD_THRESHOLD of hold position * radius multiplier
     for LIMB_HOLD_MIN_FRAMES, limb is considered to be on that hold */
     private HOLD_RADIUS_MULTIPLIER = 2;
-    private LIMB_HOLD_THRESHOLD = 5;
+    private LIMB_HOLD_THRESHOLD = 50;
     private LIMB_HOLD_MAX_FRAME_MOVEMENT = 20;
     /* When limb occluded max frame to check on each side for non-occluded limb */
     private MAX_OCCLUDE_CHECK_FRAMES = 10
@@ -173,13 +173,28 @@ export class Positioner {
         } as Delta
     }
 
-    public ClearOnHold(routeMap: Route) {
+    public SetOnHold(routeMap: Route, bodyPosition: BodyPosition) {
+        // First clear the holds
         for (var hold of routeMap.holds) {
             hold.onHold = false
         }
+        if (bodyPosition.leftHand.onHold)  {
+            bodyPosition.leftHand.onHold.onHold = true
+        }
+        if (bodyPosition.rightHand.onHold)  {
+            bodyPosition.rightHand.onHold.onHold = true
+        }        
+        if (bodyPosition.leftFoot.onHold)  {
+            bodyPosition.leftFoot.onHold.onHold = true
+        }        
+        if (bodyPosition.rightFoot.onHold)  {
+            bodyPosition.rightFoot.onHold.onHold = true
+        }
     }
-    public LimbOnHold(limb: LimbPosition, routeMap: Route, colorHolds: boolean): boolean {
+    public LimbOnHold(limb: LimbPosition, routeMap: Route, colorHolds: boolean): HoldPosition {
         //console.log(`Checkling limb position against ${routeMap.holds.length} holds in route`)
+        let bestHold = null
+        let bestDistance = 100000
         for (var hold of routeMap.holds) {
             let deltaX = limb.x - hold.x
             let deltaY = limb.y - hold.y
@@ -191,13 +206,16 @@ export class Positioner {
                     return false;
                 }
                 */
-                if (colorHolds) {
-                    hold.onHold = true
+                if (distance < bestDistance) {
+                    bestHold = hold
+                    bestDistance = distance
                 }
-                return true;
             }
         }
-        return false;
+        if (bestHold && colorHolds) {
+            bestHold.onHold = true
+        }
+        return bestHold;
     }
 
     public FillInOcclusions(recording: Recording) {
@@ -501,8 +519,9 @@ export class Positioner {
         RenderSet.AddHolds(route)
 
         let firstPos = noviceRecording.frames[0]
-        let expertColor: Color = {red: 0.9, blue: 0.45, green: 0.45, alpha: 0.1}
+        let expertColor: Color = {red: 0.6, blue: 0.15, green: 0.15, alpha: 0.5}
         let noviceColor: Color = {red: 0.5, blue: 1, green: 0.5, alpha: 1.0}
+        let noviceHoldColor: Color = {red: 0.5, blue: 1, green: 0.9, alpha: 1.0}
 
         let animationSet: AnimationSet[] = []
         let lastBestFrame = 0
@@ -518,8 +537,8 @@ export class Positioner {
             } as AnimationSet) 
         }
 
-        RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.expertFrame, expertColor)
-        RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.noviceFrame, noviceColor)
+        RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.expertFrame, expertColor, expertColor)
+        RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.noviceFrame, noviceColor, noviceHoldColor)
 
 
         // repeat with the interval of 2 seconds
@@ -529,9 +548,12 @@ export class Positioner {
                 this.curFrame = 0
             }
             RenderSet.ClearBodyPositions();
-            this.ClearOnHold(route)
-            RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.noviceFrame, noviceColor)
-            RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.expertFrame, expertColor)
+            
+            this.SetOnHold(route, animationSet[this.curFrame].bestDelta.noviceFrame)
+            RenderSet.AddHolds(route)
+
+            RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.noviceFrame, noviceColor, noviceHoldColor)
+            RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.expertFrame, expertColor, expertColor)
 
             //let suggestions = suggester.getSuggestions(animationSet[this.curFrame].bestDelta)
             RenderSet.suggestions = suggester.getSuggestions(animationSet[this.curFrame].bestDelta)
