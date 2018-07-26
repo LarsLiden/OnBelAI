@@ -117,9 +117,11 @@ export class RenderSet {
             let p3 = [x1, y1] as Point
             let p2 = [x2 - lineWidth, y2 + lineWidth] as Point
             let p1 = [x2 + lineWidth, y2 - lineWidth] as Point
-            let facet = [[p1[0], p1[1]], [p2[0], p2[1]], [p3[0], p3[1]]]
+           // let facet = [[p1[0], p1[1]], [p2[0], p2[1]], [p3[0], p3[1]]]
 
             return {
+                primitive: "lines",
+
                 // In a draw call, we can pass the shader source code to regl
                 frag: `
                         precision mediump float;
@@ -136,14 +138,16 @@ export class RenderSet {
                         }`,
 
                 attributes: {
-                    position: facet
+                    position: [[x1, y1], [x2, y2]]
                 },
 
                 uniforms: {
-                    color: [l.color.red, l.color.green, l.color.blue, l.color.alpha]
+                    color: [l.color.red, l.color.green, l.color.blue, l.color.alpha],
+                    pointWidth: 8.0
                 },
 
-                count: 3
+                lineWidth: 1,
+                count: 2
             }
         }
         )
@@ -185,7 +189,8 @@ export class RenderSet {
                 },
 
                 uniforms: {
-                    color: [0.5, 0.7, 0.7, 0.3]
+                    color: [0.5, 0.7, 0.7, 0.3],
+                    pointWidth: 8.0
                 },
 
                 count: 4,
@@ -226,7 +231,7 @@ export class RenderSet {
             },
 
             uniforms: {
-                color: [1.0, 1.0, 1.0, 0.5],
+                color: [0.5, 0.5, 1.0, 0.5],
                 pointWidth: 1.0
             },
 

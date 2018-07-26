@@ -21,7 +21,7 @@ export class Suggester {
             // Suggest moves to match at least 3 contact points.
 
             // HIPS
-            if (delta.leftHip.deltaY > 0 && delta.rightHip.deltaY > 0) {
+            if (delta.leftHip.deltaY < 0 && delta.rightHip.deltaY < 0) {
                 ret.push('Try raising your hips')
             }
             else if (delta.leftHip.deltaY > 0 && delta.rightHip.deltaY > 0) {
