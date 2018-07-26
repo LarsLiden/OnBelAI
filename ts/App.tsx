@@ -16,7 +16,7 @@ positioner.Run()
 
 export const SCALE = 0.60
 export const HEIGHT = 1920
-export const WIDTH = 1020 
+export const WIDTH = 1020
 
 class App extends Component {
 
@@ -28,26 +28,26 @@ class App extends Component {
       container: rootDiv,
     })
 
-   // let width = context.drawingBufferWidth
-   // let height = context.drawingBufferHeight
+    // let width = context.drawingBufferWidth
+    // let height = context.drawingBufferHeight
 
     const canvas = document.querySelector("#reglTest > canvas:first-of-type");
-    canvas.setAttribute("style", `margin: auto; width:${SCALE * WIDTH}px; height: ${SCALE *HEIGHT}px; background-color: black; background-position: center; display:block; background-repeat: no-repeat; background-size: contain; background-image: url(${String(route2background)});`);
+    canvas.setAttribute("style", `margin: auto; width:${SCALE * WIDTH}px; height: ${SCALE * HEIGHT}px; background-color: black; background-position: center; display:block; background-repeat: no-repeat; background-size: contain; background-image: url(${String(route2background)});`);
 
     var lineWidth = 1
     reglObj.clear({
-      color: [0,0,0,0],//[(tick % 100 * 0.01), 0, 0, 1],
+      color: [0, 0, 0, 0],//[(tick % 100 * 0.01), 0, 0, 1],
       depth: 1
     });
 
-    reglObj.frame((context:any) => {
+    reglObj.frame((context: any) => {
       // context.tick
-      
+
       reglObj.clear({
-        color: [0,0,0,0],//[(tick % 100 * 0.01), 0, 0, 1],
+        color: [0, 0, 0, 0],//[(tick % 100 * 0.01), 0, 0, 1],
         depth: 1
       });
-      
+
 
       //let width = context.drawingBufferWidth
       //let height = context.drawingBufferHeight
@@ -57,7 +57,7 @@ class App extends Component {
       let offsetY = 1
 
       document.querySelector("#suggestion1").innerHTML = RenderSet.suggestions[0] ? RenderSet.suggestions[0] : "None"
-    
+
       if (RenderSet.suggestions[1]) {
         document.querySelector("#suggestion2").innerHTML = RenderSet.suggestions[1]
         document.querySelector("#suggestion2").setAttribute("style", `visibility:visible`)
@@ -81,16 +81,19 @@ class App extends Component {
         //console.log(facet);
         reglObj(facet)();
       }
-      /*
-      for (let hold of RenderSet.RenderHolds(height, width, offsetX, offsetY)) {
-        console.log(hold);
-        reglObj(hold)();
-      }
-      */
+
+      reglObj(RenderSet.RenderCorners(height, width, offsetX, offsetY))();
+
+      /*      
+            for (let hold of RenderSet.RenderHolds(height, width, offsetX, offsetY)) {
+              //console.log(hold);
+              reglObj(hold)();
+            }
+        */
     });
 
   }
-  
+
   render() {
     return (
       <div className="Background">
