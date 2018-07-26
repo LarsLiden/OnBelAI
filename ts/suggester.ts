@@ -87,54 +87,54 @@ export class Suggester {
                 ret.push('Move hips to the right and up');
 
                 // case - bend right arm
-                if (!delta.rightArmBent) {
+               /* if (!delta.rightArmBent) {
                     ret.push('Try bending your right arm');
-                }
+                }*/
 
                 // case - straighten left knee
                 if (delta.leftLegBent) {
-                    ret.push('Try straightening your left knee');
+                    ret.push('Try standing up on your left leg');
                 }
 
                 // case - bend right knee
-                if (!delta.rightLegBent) {
+             /*   if (!delta.rightLegBent) {
                     ret.push('Try bending your right knee');
-                }
+                }*/
             } else if (this.isInSecondQuadrant(delta.rightHip)) {
                 // move left and up
                 ret.push('Move hips to the left and up');
                 
                 // case - bend left arm
-                if (!delta.leftArmBent) {
+            /*    if (!delta.leftArmBent) {
                     ret.push('Try bending your left arm');
-                }
+                }*/
 
                 // case - straighten right knee
                 if (delta.rightLegBent) {
-                    ret.push('Try straightening your right knee');
+                    ret.push('Try standing on your right leg');
                 }
 
                 // case - bend left knee
-                if (!delta.leftLegBent) {
+                /*if (!delta.leftLegBent) {
                     ret.push('Try bending your left knee');
-                }
+                }*/
             } else if (this.isInThirdQuadrant(delta.rightHip)) {
                 // move left and down
                 ret.push('Move hips to the left and down');
 
                 // case - straighten right arm
                 if (delta.rightArmBent) {
-                    ret.push('Try straightening your right arm');
+                    ret.push('Try reaching with your right arm');
                 }
 
                 // case - bend left knee
-                if (!delta.leftLegBent) {
+             /*   if (!delta.leftLegBent) {
                     ret.push('Try bending your left knee');
                 }
-
+*/
                 // case - straighten right knee
                 if (delta.rightLegBent) {
-                    ret.push('Try straightening your right knee');
+                    ret.push('Try standing on your right leg');
                 }
             } else if (this.isInFourthQuadrant(delta.rightHip)) {
                 // move right and down
@@ -142,25 +142,21 @@ export class Suggester {
 
                 // case - straighten left arm
                 if (delta.leftArmBent) {
-                    ret.push('Try straightening your left arm');
+                    ret.push('Try reaching with your left arm');
                 }
 
                 // case - bend right knee
-                if (!delta.rightLegBent) {
+           /*     if (!delta.rightLegBent) {
                     ret.push('Try bending your right knee');
                 }
-                
+             */   
                 // case - straighten left knee
                 if (delta.leftLegBent) {
-                    ret.push('Try straightening your left knee');
+                    ret.push('Try standing on your left leg');
                 }
             }
         }
 
-
-        if (ret.length == 0) {
-            ret.push("None")
-        }
         return ret;
     }
 

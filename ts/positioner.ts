@@ -90,15 +90,17 @@ export class Positioner {
         return expert.frames.map(e => this.GetDelta(e, novice))
     }
     
-    public GetBestExpertFrame(deltas: Delta[], novice: BodyPosition): Delta {
+    public GetBestExpertFrame(deltas: Delta[], novice: BodyPosition, lastBestIndex: number): Delta {
 
         // Get largest match
         let mostMatches = 0
-        deltas.map(d => { mostMatches = Math.max(mostMatches, d.matchCount) })
+        let rDeltas = deltas.filter(d => d.expertFrame.frameNumber >= lastBestIndex)
+        rDeltas.map(d => { mostMatches = Math.max(mostMatches, d.matchCount) })
 
         // Filter to ones with max matches
-        let candidateDeltas = deltas.filter(d => d.matchCount === mostMatches)
+        let candidateDeltas = rDeltas.filter(d => d.matchCount === mostMatches)
 
+        candidateDeltas = deltas // temp - don't filter by holds
         // Of the remaining find one with smallest delta
         let smallestDistance = Number.MAX_SAFE_INTEGER;
         let bestDelta = candidateDeltas[0]
@@ -171,7 +173,12 @@ export class Positioner {
         } as Delta
     }
 
-    public LimbOnHold(limb: LimbPosition, routeMap: Route): boolean {
+    public ClearOnHold(routeMap: Route) {
+        for (var hold of routeMap.holds) {
+            hold.onHold = false
+        }
+    }
+    public LimbOnHold(limb: LimbPosition, routeMap: Route, colorHolds: boolean): boolean {
         //console.log(`Checkling limb position against ${routeMap.holds.length} holds in route`)
         for (var hold of routeMap.holds) {
             let deltaX = limb.x - hold.x
@@ -184,6 +191,9 @@ export class Positioner {
                     return false;
                 }
                 */
+                if (colorHolds) {
+                    hold.onHold = true
+                }
                 return true;
             }
         }
@@ -401,7 +411,7 @@ export class Positioner {
         }
     }
 
-    public AnnotateRecording (inputRecording: Recording, routeMap: Route) {
+    public AnnotateRecording (inputRecording: Recording, routeMap: Route, colorHolds: boolean) {
         const maxHistory:number = 30
 
         var positionHistory: BodyPosition[] = []
@@ -412,10 +422,10 @@ export class Positioner {
             // No need to check hips and shoulders and stuff.
             //console.log(`Annotating frame ${frame.frameNumber} of ${inputRecording.frames.length}`)
             console.log(`Annotating frame ${f} of ${inputRecording.frames.length}`)
-            frame.leftHand.onHold = this.LimbOnHold(frame.leftHand, routeMap)
-            frame.rightHand.onHold = this.LimbOnHold(frame.rightHand, routeMap)
-            frame.leftFoot.onHold = this.LimbOnHold(frame.leftFoot, routeMap)
-            frame.rightFoot.onHold = this.LimbOnHold(frame.rightFoot, routeMap)  
+            frame.leftHand.onHold = this.LimbOnHold(frame.leftHand, routeMap, colorHolds)
+            frame.rightHand.onHold = this.LimbOnHold(frame.rightHand, routeMap, colorHolds)
+            frame.leftFoot.onHold = this.LimbOnHold(frame.leftFoot, routeMap, colorHolds)
+            frame.rightFoot.onHold = this.LimbOnHold(frame.rightFoot, routeMap, colorHolds)  
             let numLimbsOnHolds : number = (frame.leftHand.onHold ? 1: 0) + (frame.rightHand.onHold ? 1: 0) 
                 + (frame.leftFoot.onHold ? 1: 0) + (frame.rightFoot.onHold ? 1: 0)
             if (numLimbsOnHolds > 0) {
@@ -485,20 +495,22 @@ export class Positioner {
         this.FillInOcclusions(noviceRecording)
 
         // Add movement history and frames where limbs are on holds to each of the recordings
-        this.AnnotateRecording(expertRecording, route)
-        this.AnnotateRecording(noviceRecording, route)
+        this.AnnotateRecording(expertRecording, route, false)
+        this.AnnotateRecording(noviceRecording, route, true)
 
         RenderSet.AddHolds(route)
 
         let firstPos = noviceRecording.frames[0]
-        let expertColor: Color = {red: 1, blue: 0.5, green: 0.5, alpha: 0.5}
+        let expertColor: Color = {red: 0.9, blue: 0.45, green: 0.45, alpha: 0.1}
         let noviceColor: Color = {red: 0.5, blue: 1, green: 0.5, alpha: 1.0}
 
         let animationSet: AnimationSet[] = []
+        let lastBestFrame = 0
         for (let index in noviceRecording.frames) {
             // Calculate all the deltas
             let deltas = this.GetDeltas(expertRecording, noviceRecording.frames[index])
-            let bestDelta = this.GetBestExpertFrame(deltas, noviceRecording.frames[index])
+            let bestDelta = this.GetBestExpertFrame(deltas, noviceRecording.frames[index], lastBestFrame)
+            lastBestFrame = bestDelta.expertFrame.frameNumber
             let nextDelta = this.GetNextHoldChangeFrame(bestDelta, deltas, expertRecording)
             animationSet.push({
                 bestDelta,
@@ -517,11 +529,12 @@ export class Positioner {
                 this.curFrame = 0
             }
             RenderSet.ClearBodyPositions();
+            this.ClearOnHold(route)
             RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.noviceFrame, noviceColor)
             RenderSet.AddBodyPosition(animationSet[this.curFrame].bestDelta.expertFrame, expertColor)
 
             //let suggestions = suggester.getSuggestions(animationSet[this.curFrame].bestDelta)
-            RenderSet.suggestions = suggester.getSuggestions(animationSet[this.curFrame].nextDelta)
+            RenderSet.suggestions = suggester.getSuggestions(animationSet[this.curFrame].bestDelta)
         }, 300);
     }
 }

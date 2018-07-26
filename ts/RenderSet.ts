@@ -87,15 +87,23 @@ export class RenderSet {
     public static AddHolds(route: Route) {
         console.log(`Adding holds`)
         let holdColor: Color = { red: 0.8, green: 0.2, blue: 0.8, alpha: 0.8 }
+        let onHoldColor: Color = { red: 1.0, green: 0.0, blue: 0.0, alpha: 0.8 }
         for (let holdPosition of route.holds) {
             console.log(`Adding hold at [${holdPosition.x}, ${holdPosition.y}] with radius ${holdPosition.radius}`)
-            this.AddHold(holdPosition.x, holdPosition.y, holdPosition.radius, holdColor)
+            let drawColor = holdPosition.onHold ? onHoldColor : holdColor
+            this.AddHold(holdPosition.x, holdPosition.y, holdPosition.radius, drawColor)
         }
     }
 
     public static AddHold(centerX: number, centerY: number, radius: number, color: Color) {
         let hold: Hold = { center: [centerX, centerY], radius: radius, color: color, name: "hold" }
         this.holds.push(hold)
+    }
+    public static Angle ( x1: number,  y1: number, x2: number, y2: number) {
+        let xdiff = x1 - x2;
+        let ydiff = y1 - y2;
+        let atan = Math.atan2(ydiff, xdiff);
+        return atan;
     }
 
     public static RenderFacets(height: number, width: number, offsetX: number, offsetY: number) {
@@ -113,14 +121,29 @@ export class RenderSet {
             let x2 = l.end[0]
             let y2 = l.end[1]  
             */
-            let lineWidth = 8 / width
-            let p3 = [x1, y1] as Point
-            let p2 = [x2 - lineWidth, y2 + lineWidth] as Point
-            let p1 = [x2 + lineWidth, y2 - lineWidth] as Point
-           // let facet = [[p1[0], p1[1]], [p2[0], p2[1]], [p3[0], p3[1]]]
+            let angle = this.Angle(x1, y1, x2, y2)
+            let lineWidth = 9 / width
+
+            let tx1 = x1 - (Math.sin(angle) * lineWidth);
+            let ty1 = y1 + (Math.cos(angle) * lineWidth);
+
+            let tx2 = x2 - (Math.sin(angle) * lineWidth);
+            let ty2 = y2 + (Math.cos(angle) * lineWidth);
+            
+            let tx3 = x2 + (Math.sin(angle) * lineWidth);
+            let ty3 = y2 - (Math.cos(angle) * lineWidth);
+
+            let tx4 = x1 + (Math.sin(angle) * lineWidth);
+            let ty4 = y1 - (Math.cos(angle) * lineWidth);
+
+            let p1 = [tx1, ty1] as Point
+            let p2 = [tx2, ty2] as Point
+            let p3 = [tx3, ty3] as Point
+            let p4 = [tx4, ty4] as Point
+            let facets = [p1, p2, p3, p4]
 
             return {
-                primitive: "lines",
+                primitive: "triangle fan",
 
                 // In a draw call, we can pass the shader source code to regl
                 frag: `
@@ -138,7 +161,7 @@ export class RenderSet {
                         }`,
 
                 attributes: {
-                    position: [[x1, y1], [x2, y2]]
+                    position: facets
                 },
 
                 uniforms: {
@@ -147,7 +170,7 @@ export class RenderSet {
                 },
 
                 lineWidth: 1,
-                count: 2
+                count: 4
             }
         }
         )

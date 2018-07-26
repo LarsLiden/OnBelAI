@@ -66,7 +66,7 @@ export interface Delta {
 
 export interface Route {
    name: string
-   holds: HoldPosition[] 
+   holds: HoldPosition[]
 }
 
 export interface HoldPosition {
@@ -74,6 +74,7 @@ export interface HoldPosition {
     y: number
     radius: number
     id?: string
+    onHold: boolean
 }
 
 export interface Color {
