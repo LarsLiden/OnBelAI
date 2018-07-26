@@ -59,7 +59,13 @@ class App extends Component {
       let offsetX = -1
       let offsetY = 1
 
-      document.querySelector("#suggestion1").innerHTML = RenderSet.suggestions[0] ? RenderSet.suggestions[0] : "None"
+      if (RenderSet.suggestions[0]) {
+        document.querySelector("#suggestion1").innerHTML = RenderSet.suggestions[0]
+        document.querySelector("#suggestion1").setAttribute("style", `visibility:visible`)
+      }
+      else {
+        document.querySelector("#suggestion1").setAttribute("style", `visibility:hidden`)
+      }
 
       if (RenderSet.suggestions[1]) {
         document.querySelector("#suggestion2").innerHTML = RenderSet.suggestions[1]

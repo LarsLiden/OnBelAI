@@ -35,7 +35,7 @@
 .Suggestion {
   position: absolute;
   width: 300px;
-  left: 1000px;
+  left: 1300px;
   margin: 10px;
   font-size: 20px;
   color: black;
@@ -59,7 +59,7 @@
 .Novice {
   position: absolute;
   width: 300px;
-  left: 100px;
+  left: 200px;
   margin: 10px;
   font-size: 20px;
   color: black;
@@ -74,7 +74,7 @@
 .Expert {
   position: absolute;
   width: 300px;
-  left: 100px;
+  left: 200px;
   margin: 10px;
   font-size: 20px;
   color: black;
