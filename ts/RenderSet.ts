@@ -185,7 +185,7 @@ export class RenderSet {
                 },
 
                 uniforms: {
-                    color: [0.7, 0.9, 0.9, 0.3]
+                    color: [0.5, 0.7, 0.7, 0.3]
                 },
 
                 count: 4,
