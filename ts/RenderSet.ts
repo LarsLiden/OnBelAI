@@ -155,7 +155,8 @@ export class RenderSet {
 
             let x = h.center[0] / width + offsetX
             let y = h.center[1] / height + offsetY
-            let r = h.radius * (0.05 / 10)
+            let rx = h.radius * (0.03 / 10)
+            let ry = rx * (1080/1920)
             //console.log(`Putting hold at ${x}, ${y}, ${r}`)
 
             return {
@@ -170,43 +171,21 @@ export class RenderSet {
                 vert: `
                         precision mediump float;
                         attribute vec2 position;
-
-                        uniform float pointWidth;
-                        uniform float stageWidth;
-                        uniform float stageHeight;
-
-                        // helper function to transform from pixel space to normalized
-                        // device coordinates (NDC). In NDC (0,0) is the middle,
-                        // (-1, 1) is the top left and (1, -1) is the bottom right.
-                        vec2 normalizeCoords(vec2 position) {
-                            // read in the positions into x and y vars
-                            float x = position[0];
-                            float y = position[1];
-
-                            return vec2(
-                                2.0 * ((x / stageWidth) - 0.5),
-                                // invert y to treat [0,0] as bottom left in pixel space
-                                -(2.0 * ((y / stageHeight) - 0.5)));
-                        }
-
                         void main () {
-                          gl_Position = vec4(normalizeCoords(position), 0, 1);
+                          gl_Position = vec4(position, 0, 1);
                         }`,
 
                 attributes: {
                     position: [
-                        [x - r, y - r],
-                        [x + r, y - r],
-                        [x + r, y + r],
-                        [x - r, y + r]
+                        [x - rx, y - ry],
+                        [x + rx, y - ry],
+                        [x + rx, y + ry],
+                        [x - rx, y + ry]
                     ]
                 },
 
                 uniforms: {
-                    color: [0.6, 0.2, 0.6, 0.5],
-                    pointWidth: 1.0,
-                    stageWidth: width,
-                    stageHeight: height
+                    color: [0.7, 0.9, 0.9, 0.3]
                 },
 
                 count: 4,

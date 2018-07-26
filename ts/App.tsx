@@ -16,7 +16,7 @@ positioner.Run()
 
 export const SCALE = 0.60
 export const HEIGHT = 1920
-export const WIDTH = 1020
+export const WIDTH = 1080
 
 class App extends Component {
 
@@ -32,7 +32,10 @@ class App extends Component {
     // let height = context.drawingBufferHeight
 
     const canvas = document.querySelector("#reglTest > canvas:first-of-type");
+
     canvas.setAttribute("style", `margin: auto; width:${SCALE * WIDTH}px; height: ${SCALE * HEIGHT}px; background-color: black; background-position: center; display:block; background-repeat: no-repeat; background-size: contain; background-image: url(${String(route2background)});`);
+    canvas.setAttribute("height", `${SCALE*HEIGHT}px`)
+    canvas.setAttribute("width", `${SCALE*WIDTH}px`)
 
     var lineWidth = 1
     reglObj.clear({
@@ -84,12 +87,11 @@ class App extends Component {
 
       reglObj(RenderSet.RenderCorners(height, width, offsetX, offsetY))();
 
-      /*      
+           
             for (let hold of RenderSet.RenderHolds(height, width, offsetX, offsetY)) {
               //console.log(hold);
               reglObj(hold)();
             }
-        */
     });
 
   }
