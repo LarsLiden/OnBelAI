@@ -50,7 +50,7 @@ export class Positioner {
     /* If limb is within LIMB_HOLD_THRESHOLD of hold position * radius multiplier
     for LIMB_HOLD_MIN_FRAMES, limb is considered to be on that hold */
     private HOLD_RADIUS_MULTIPLIER = 2;
-    private LIMB_HOLD_THRESHOLD = 50;
+    private LIMB_HOLD_THRESHOLD = 70;
     private LIMB_HOLD_MAX_FRAME_MOVEMENT = 20;
     /* When limb occluded max frame to check on each side for non-occluded limb */
     private MAX_OCCLUDE_CHECK_FRAMES = 10
@@ -521,7 +521,7 @@ export class Positioner {
         let firstPos = noviceRecording.frames[0]
         let expertColor: Color = {red: 0.6, blue: 0.15, green: 0.15, alpha: 0.5}
         let noviceColor: Color = {red: 0.5, blue: 1, green: 0.5, alpha: 1.0}
-        let noviceHoldColor: Color = {red: 0.5, blue: 1, green: 0.9, alpha: 1.0}
+        let noviceHoldColor: Color = {red: 0.4, blue: 0.9, green: 1, alpha: 1.0}
 
         let animationSet: AnimationSet[] = []
         let lastBestFrame = 0
